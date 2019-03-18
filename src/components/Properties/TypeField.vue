@@ -20,13 +20,13 @@ export const propertyTypes = [
     value: 'static',
     image: {
       size: 'mini',
-      src: '/img/icons/static.png',
+      src: require('@/assets/static.png'),
     },
   },
   {
     value: 'dynamic',
     image: {
-      src: '/img/icons/dynamic.gif',
+      src: require('@/assets/dynamic.gif'),
     },
   },
 ];

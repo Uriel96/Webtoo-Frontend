@@ -63,7 +63,11 @@ export default class ComponentWrapper extends ExtendedVue {
     return getComponent(this.componentData);
   }
   get componentProperties() {
-    const componentDef = this.editor.getComponentInfo(this.editor.componentData(this.entryId));
+    const compData = this.editor.componentData(this.entryId);
+    if (!compData) {
+      return {};
+    }
+    const componentDef = this.editor.getComponentInfo(compData);
     const staticProperties = getStaticProperties(componentDef, this.componentData);
     const dynamicDummyProperties = getDynamicDummyProperties(this.componentDefinitionData, this.componentData);
     return { ...staticProperties, ...dynamicDummyProperties };

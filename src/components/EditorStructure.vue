@@ -24,23 +24,23 @@ import { Vue, Component, Prop } from 'vue-property-decorator';
 import splitpanes from 'splitpanes';
 import 'splitpanes/dist/splitpanes.css';
 import { PaneStructure } from '@/models';
-import editor from '@/store/modules/editor';
 
 @Component({
+  name: 'editor-structure',
   components: {
     'split-panes': splitpanes,
   },
 })
 export default class EditorStructure extends ExtendedVue {
-  @Prop(String) public entryId!: string;
+  @Prop() public entryId!: string;
 
   get structure() {
-    return editor.structure.structure;
+    return this.editor.structure.structure;
   }
   get currentStructure() {
     return this.structure[this.entryId];
   }
-  get isVerticalPane(): boolean {
+  get isVerticalPane() {
     return (this.currentStructure as PaneStructure).orientation === 'vertical';
   }
 }
