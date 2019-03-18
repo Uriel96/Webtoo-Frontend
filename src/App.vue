@@ -1,31 +1,47 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
     <router-view/>
   </div>
 </template>
 
+<script lang="ts">
+import ExtendedVue from '@/ExtendedVue';
+import { Component } from 'vue-property-decorator';
+
+@Component
+export default class App extends ExtendedVue {
+}
+</script>
+
+
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-#nav {
-  padding: 30px;
+/* html */
+html,
+body {
+  margin: 0px;
+  padding: 0px;
+  height: 100vh;
 }
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
+/* Scroll bar */
+::-webkit-scrollbar-track {
+  border-radius: 0px !important;
+  background-color: rgba(255, 255, 255, 0.2) !important;
+}
+::-webkit-scrollbar {
+  width: 8px !important;
+  height: 8px !important;
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+::-webkit-scrollbar-track-piece {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+::-webkit-scrollbar-thumb {
+  border-radius: 10px !important;
 }
 
-#nav a.router-link-exact-active {
-  color: #42b983;
+.full-size {
+  height: 100%;
+  width: 100%;
 }
 </style>
