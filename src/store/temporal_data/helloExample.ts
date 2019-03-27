@@ -1,86 +1,83 @@
-import { ComponentDefinitionData } from '@/models';
+import { ComponentInfo } from '@/models';
 
-export const helloExample: ComponentDefinitionData = {
+export const helloExample: ComponentInfo = {
+  id: 'user1/pack1/HelloExample',
+  libraryId: 'user1/pack1',
   name: 'HelloExample',
   entryId: 'div-1',
-  contentTemplate: `<div><design-entry></design-entry></div>`,
-  template: {
-    'div-1': {
+  elements: [
+    {
+      id: 'div-1',
       name: 'Div 1',
-      element: 'div',
-      properties: {
-        align: {
+      componentId: 'main/div',
+      properties: [
+        {
+          id: 'align',
           type: 'static',
           value: 'center',
         },
-        class: {
+        {
+          id: 'class',
           type: 'static',
           value: [],
         },
-      },
-      slots: {
-        children: {
+      ],
+      slots: [
+        {
+          id: 'children',
           type: 'static',
           value: ['button-1'],
         },
-      },
+      ],
     },
-    'button-1': {
+    {
+      id: 'button-1',
       name: 'Button 1',
-      component: 'SuiButton',
-      path: 'semantic-ui-vue',
-      properties: {
-      },
-      slots: {
-        content: {
+      componentId: 'semantic-ui-vue/SuiButton',
+      properties: [],
+      slots: [
+        {
+          id: 'content',
           type: 'static',
           value: 'Click Me!',
         },
+      ],
+    },
+  ],
+  style: [
+    {
+      id: 'my-class',
+      name: 'My Class',
+      type: 'class',
+      value: 'background-color: blue; padding: 10px;',
+    },
+    {
+      id: 'other-class',
+      name: 'Other Class',
+      type: 'class',
+      value: 'width: 50%;',
+    },
+  ],
+  slots: [],
+  dynamicDefinitions: {
+    data: [
+      {
+        id: 'isActive',
+        name: 'Is Active',
+        type: 'boolean-property',
+        initialValue: true,
+        dummy: true,
       },
-    },
-  },
-  style: {
-    'my-class': 'background-color: blue; padding: 10px;',
-    'other-class': 'width: 50%;',
-  },
-  globals: [
-    'SemanticUIVue',
-  ],
-  scripts: [
-    {
-      src: 'https://cdn.jsdelivr.net/npm/vue/dist/vue.js',
-    },
-    {
-      src:
-        'https://unpkg.com/semantic-ui-vue/dist/umd/semantic-ui-vue.min.js',
-    },
-  ],
-  links: [
-    {
-      href:
-        'https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.0/semantic.min.css',
-    },
-  ],
-  properties: {
-    isActive: {
-      name: 'Is Active',
-      type: 'boolean-property',
-      defaultValue: '',
-      dummy: true,
-    },
-    title: {
-      name: 'Title',
-      type: 'text-property',
-      defaultValue: '',
-      dummy: 'circle',
-    },
-  },
-  data: {},
-  slots: {},
-  methods: {
-    handleClick: {
-      parameters: ['e'],
-      code: 'this.setState({ isActive: !this.state.isActive});',
-    },
+    ],
+    functions: [],
+    properties: [
+      {
+        id: 'title',
+        name: 'Title',
+        type: 'text-property',
+        defaultValue: '',
+        dummy: 'circle',
+      },
+    ],
   },
 };

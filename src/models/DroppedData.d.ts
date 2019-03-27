@@ -1,4 +1,4 @@
-import { ComponentDefinitionData } from './ComponentDefinitionData';
+import { ComponentInfo } from './ComponentInfo';
 
 export interface DroppedResult {
   payload: DroppedPayload;
@@ -6,7 +6,7 @@ export interface DroppedResult {
   addedIndex: number;
 }
 export interface DroppedPayload {
-  component: ComponentDefinitionData;
+  component: ComponentInfo;
   componentId: string;
   type: DroppedPayloadType;
 }

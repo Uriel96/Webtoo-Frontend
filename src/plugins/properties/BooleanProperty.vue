@@ -1,12 +1,12 @@
 <template>
-  <options-property :propertyDef="extendedPropertyDef" :propertyId="propertyId"></options-property>
+  <options-property :propertyDef="extendedPropertyDef" :propertyData="propertyData"/>
 </template>
 
 <script lang="ts">
 import ExtendedVue from '@/ExtendedVue';
 import { Prop, Component } from 'vue-property-decorator';
 import OptionsProperty from '@/plugins/properties/OptionsProperty.vue';
-import { PropertyDefinitionData } from '@/models';
+import { PropertyDefinition, PropertyData } from '@/models';
 
 const booleanOptions = {
   options: [
@@ -21,8 +21,8 @@ const booleanOptions = {
   },
 })
 export default class BooleanProperty extends ExtendedVue {
-  @Prop() public propertyDef!: PropertyDefinitionData;
-  @Prop() public propertyId!: string;
+  @Prop() public propertyDef!: PropertyDefinition;
+  @Prop() public propertyData!: PropertyData;
 
   get extendedPropertyDef() {
     return { ...this.propertyDef, data: booleanOptions };

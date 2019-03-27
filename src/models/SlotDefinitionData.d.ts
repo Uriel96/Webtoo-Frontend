@@ -1,4 +1,5 @@
-export interface SlotDefinitionData {
+export interface SlotDefinition {
+  id: string;
   name: string;
   type: string;
   defaultValue: any;

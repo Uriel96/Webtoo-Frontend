@@ -1,15 +1,15 @@
 import ExtendedVue from '@/ExtendedVue';
-import { PropertyDefinitionData } from '@/models';
+import { PropertyDefinition } from '@/models';
+import { get } from '@/utilities';
 
 export default abstract class BaseProperty extends ExtendedVue {
-  public propertyDef!: PropertyDefinitionData;
-  public propertyId!: string;
+  public propertyDef!: PropertyDefinition;
 
   get propertyData() {
     if (!this.editor.selectedComponent) {
       return;
     }
-    return this.editor.selectedComponent.properties[this.propertyId];
+    return get(this.editor.selectedComponent.properties, this.propertyDef.id);
   }
   get isDynamic() {
     if (!this.propertyData) {

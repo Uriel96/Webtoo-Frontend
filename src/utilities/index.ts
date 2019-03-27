@@ -1,4 +1,4 @@
-import { ComponentDefinitionData } from '@/models';
+import { ComponentInfo, LibraryInfo } from '@/models';
 import ShortUniqueId from 'short-unique-id';
 import { VueConstructor } from 'vue';
 const uid = new ShortUniqueId();
@@ -54,14 +54,18 @@ export const setInternalVueConfiguration = () => {
   InternalVue().config.productionTip = false;
   InternalVue().config.silent = true;
 };
-export const setInternalVueGlobals = (componentDefinition: ComponentDefinitionData) => {
-  const { globals } = componentDefinition;
+export const setInternalVueGlobals = (libraries: LibraryInfo[]) => {
+  const globals = libraries.flatMap((lib) => lib.globals);
   for (const global of globals || []) {
-    InternalVue().use((window as any)[global]);
+    InternalVue().use((window as any)[global.name]);
   }
 };
 export const defaultTemplate = `<div><design-entry /></div>`;
 
 export const createUID = () => {
   return uid.randomUUID(6);
+};
+
+export const get = <T extends { id: string }>(elements: T[], id: string): T | undefined => {
+  return elements.find((x) => x.id === id);
 };

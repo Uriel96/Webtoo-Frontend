@@ -29,9 +29,10 @@
 <script lang="ts">
 import ExtendedVue from '@/ExtendedVue';
 import { Prop, Component } from 'vue-property-decorator';
-import { PropertyDefinitionData, Style } from '@/models';
+import { PropertyDefinition, StyleInfo, PropertyData } from '@/models';
 import TypeField from '@/components/Properties/TypeField.vue';
 import DynamicField from '@/components/Properties/DynamicField.vue';
+import { get } from '@/utilities';
 
 @Component({
   components: {
@@ -40,14 +41,17 @@ import DynamicField from '@/components/Properties/DynamicField.vue';
   },
 })
 export default class BooleanProperty extends ExtendedVue {
-  @Prop() public propertyDef!: PropertyDefinitionData;
-  @Prop() public propertyId!: string;
+  @Prop() public propertyDef!: PropertyDefinition;
+  @Prop() public propertyData!: PropertyData;
 
   public mounted() {
     this.propertyDef.data = { options: this.styleOptions };
   }
 
   get styles() {
+    if (!this.editor.currentComponentDefinitionData) {
+      return;
+    }
     return this.editor.currentComponentDefinitionData.style;
   }
 
@@ -55,15 +59,8 @@ export default class BooleanProperty extends ExtendedVue {
     if (!this.styles) {
       return [];
     }
-    const classes = Object.keys(this.styles).map((x) => ({ value: x, text: x }));
+    const classes = this.styles.map((x) => ({ value: x.id, text: x.name }));
     return classes;
-  }
-
-  get propertyData() {
-    if (!this.editor.selectedComponent) {
-      return;
-    }
-    return this.editor.selectedComponent.properties[this.propertyId];
   }
 }
 </script>

@@ -1,48 +1,82 @@
 <template>
   <sui-card-group style="margin: 10px">
-    <sui-card
-      v-for="(component, key) in allComponents"
-      :key="key"
-      style="margin-top: 10px; margin: bottom: 10px;"
-    >
-      <sui-card-content>
-        <sui-card-header>{{component.name}}</sui-card-header>
-        <sui-card-meta>{{key}}</sui-card-meta>
-        <Container
-          :get-child-payload="getChildPayload(component, key)"
-          style="width: 100%;"
-          group-name="design"
-          :should-accept-drop="() => false"
-        >
-          <Draggable style="cursor: pointer;">
-            <div
-              style="padding: 10px; border-style: solid; border-radius: 4px; border-color: lightgrey; background-color: white;"
-            >Component</div>
-          </Draggable>
-        </Container>
-      </sui-card-content>
-    </sui-card>
+    <sui-accordion exclusive inverted>
+      <div v-for="library in libraries" :key="library.id">
+        <sui-accordion-title>
+          <sui-card style="border-radius: 2px; box-shadow: none;">
+            <sui-card-content>
+              <sui-card-header>
+                <sui-icon name="dropdown"/>
+                {{library.name}}
+              </sui-card-header>
+            </sui-card-content>
+          </sui-card>
+        </sui-accordion-title>
+        <sui-accordion-content>
+          <library-components :libraryId="library.id"/>
+        </sui-accordion-content>
+      </div>
+    </sui-accordion>
   </sui-card-group>
 </template>
 
 <script lang='ts'>
 import ExtendedVue from '@/ExtendedVue';
 import { Component } from 'vue-property-decorator';
-import { ComponentDefinitionData } from '@/models';
+import { ComponentInfo } from '@/models';
 import { Container, Draggable } from 'vue-smooth-dnd';
+import LibraryComponents from '@/components/LibraryComponents.vue';
 
 @Component({
   name: 'components-tab',
-  components: { Container, Draggable },
+  components: { 'container': Container, 'draggable': Draggable, 'library-components': LibraryComponents },
 })
 export default class ComponentsTab extends ExtendedVue {
-  public name = 'components-tab';
-
-  get allComponents(): { [key: string]: ComponentDefinitionData; } {
-    return this.editor.componentsDefinitionData;
+  get libraries() {
+    const componentDefinition = this.editor.currentComponentDefinitionData;
+    if (!componentDefinition) {
+      return [];
+    }
+    const library = this.editor.getLibrary(componentDefinition.libraryId);
+    if (!library) {
+      return [];
+    }
+    const otherLibraries = library.dependencies.map((x) => x.library)
+      .map((x) => {
+        const lib = this.editor.getLibrary(x || '');
+        if (!lib) {
+          return;
+        }
+        return lib;
+      });
+    return [...otherLibraries, library];
   }
 
-  public getChildPayload(component: ComponentDefinitionData, componentId: string) {
+  get allComponents() {
+    const componentDefinition = this.editor.currentComponentDefinitionData;
+    if (!componentDefinition) {
+      return [];
+    }
+    const library = this.editor.getLibrary(componentDefinition.libraryId);
+    if (!library) {
+      return [];
+    }
+    const otherComponents = library.dependencies.map((x) => x.library)
+      .flatMap((x) => {
+        const lib = this.editor.getLibrary(x || '');
+        if (!lib) {
+          return [];
+        }
+        return lib.components;
+      });
+    return [...otherComponents, ...library.components];
+  }
+
+  public getComponentDefinition(componentId: string) {
+    return this.editor.getComponentDefinition(componentId);
+  }
+
+  public getChildPayload(component: ComponentInfo, componentId: string) {
     return (index: any) => ({
       component,
       componentId,

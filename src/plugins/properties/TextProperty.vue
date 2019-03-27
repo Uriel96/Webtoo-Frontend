@@ -25,7 +25,7 @@
 <script lang='ts'>
 import ExtendedVue from '@/ExtendedVue';
 import { Prop, Component } from 'vue-property-decorator';
-import { PropertyDefinitionData, PropertyData } from '@/models';
+import { PropertyDefinition, PropertyData } from '@/models';
 import TypeField from '@/components/Properties/TypeField.vue';
 import DynamicField from '@/components/Properties/DynamicField.vue';
 
@@ -36,15 +36,9 @@ import DynamicField from '@/components/Properties/DynamicField.vue';
   },
 })
 export default class TextProperty extends ExtendedVue {
-  @Prop() public propertyDef!: PropertyDefinitionData;
-  @Prop() public propertyId!: string;
+  @Prop() public propertyDef!: PropertyDefinition;
+  @Prop() public propertyData!: PropertyData;
 
-  get propertyData() {
-    if (!this.editor.selectedComponent) {
-      return;
-    }
-    return this.editor.selectedComponent.properties[this.propertyId];
-  }
   get isDynamic() {
     if (!this.propertyData) {
       return;

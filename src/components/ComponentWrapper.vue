@@ -12,14 +12,12 @@
         :style="componentStyles"
         class="real-component"
       >
-        <template v-for="(slot, slotId) in slots">
+        <template v-for="slot in slots">
           <slot-wrapper
-            :key="slotId"
+            :key="slot.id"
             :slotData="slot"
-            :slotId="slotId"
             :entryId="entryId"
             :componentDefinitionData="componentDefinitionData"
-            :componentsDefinitionData="componentsDefinitionData"
           />
         </template>
       </component>
@@ -31,13 +29,11 @@
 import ExtendedVue from '@/ExtendedVue';
 import { Component, Prop } from 'vue-property-decorator';
 import {
-  ComponentData,
-  ComponentsDefinitionData,
-  ComponentDefinitionData,
-  Slots,
+  ElementInfo,
+  ComponentInfo,
 } from '@/models';
 import { Container, Draggable } from 'vue-smooth-dnd';
-import { entries, InternalVue } from '@/utilities';
+import { entries, InternalVue, get, reduceEntries } from '@/utilities';
 import SlotWrapper from '@/components/SlotWrapper.vue';
 
 @Component({
@@ -48,24 +44,34 @@ import SlotWrapper from '@/components/SlotWrapper.vue';
   },
 })
 export default class ComponentWrapper extends ExtendedVue {
-  @Prop() public componentsDefinitionData!: ComponentsDefinitionData;
-  @Prop() public componentDefinitionData!: ComponentDefinitionData;
+  @Prop() public componentsDefinitionData!: ComponentInfo[];
+  @Prop() public componentDefinitionData!: ComponentInfo;
   @Prop() public entryId!: string;
 
   get componentData() {
-    const { template } = this.componentDefinitionData;
-    return template ? template[this.entryId] : undefined;
+    const { elements } = this.componentDefinitionData;
+    return elements ? elements.find((x) => x.id === this.entryId) : undefined;
   }
   get slots() {
     return getStaticSlots(this.componentData);
   }
   get properComponent() {
-    return getComponent(this.componentData);
+    if (!this.componentData) {
+      return;
+    }
+    const componentDefinition = this.editor.getComponentDefinition(this.componentData.componentId);
+    if (!componentDefinition) {
+      return;
+    }
+    if (componentDefinition.isHTMLTag) {
+      return componentDefinition.name;
+    }
+    return InternalVue().options.components[componentDefinition.name];
   }
   get componentProperties() {
     const compData = this.editor.componentData(this.entryId);
     if (!compData) {
-      return {};
+      return [];
     }
     const componentDef = this.editor.getComponentInfo(compData);
     const staticProperties = getStaticProperties(componentDef, this.componentData);
@@ -73,7 +79,8 @@ export default class ComponentWrapper extends ExtendedVue {
     return { ...staticProperties, ...dynamicDummyProperties };
   }
   get componentStyles() {
-    return getComponentStyles(this.editor.currentComponentDefinitionData, this.componentData);
+    const componentDefinition = this.editor.currentComponentDefinitionData;
+    return getComponentStyles(componentDefinition, this.componentData);
   }
   get isSelectedComponent() {
     return this.editor.selectedComponentId === this.entryId;
@@ -85,65 +92,75 @@ export default class ComponentWrapper extends ExtendedVue {
 }
 
 // TODO: Move to another place.
-const getStaticSlots = (componentData?: ComponentData): { [key: string]: any; } => {
+const getStaticSlots = (componentData?: ElementInfo) => {
   if (!componentData) {
-    return {};
+    return [];
   }
   const { slots } = componentData;
   if (!slots) {
-    return {};
+    return [];
   }
-  return entries(slots, (entities) =>
-    entities
-      .filter(([key, value]) => value.type === 'static')
-      .map<[string, any]>(([key, value]) => [key, value.value]),
-  );
+  return slots
+    .filter((slot) => slot.type === 'static');
 };
 
-const getStaticProperties = (componentDefinition: ComponentDefinitionData, componentData?: ComponentData) => {
+const getStaticProperties = (componentDefinition: ComponentInfo | undefined, componentData?: ElementInfo) => {
   if (!componentData) {
     return {};
   }
   if (!componentDefinition) {
-    return;
+    return {};
   }
   const { properties } = componentData;
-  return entries(properties, (entities) =>
-    entities
-      .filter(([key, value]) => value.type === 'static')
-      .map<[string, any]>(([key, value]) => {
-        if (componentDefinition.properties[key].type === 'boolean-property') {
-          return [key, (value.value === 'true')];
-        } else {
-          return [key, value.value];
-        }
-      }),
-  );
+  return reduceEntries(properties
+    .filter((property) => property.type === 'static')
+    .map<[string, any]>((property) => {
+      const propertyDefinition = get(componentDefinition.dynamicDefinitions.properties, property.id);
+      if (!propertyDefinition) {
+        return [property.id, undefined];
+      }
+      if (propertyDefinition.type === 'boolean-property') {
+        return [property.id, property.value === 'true'];
+      } else {
+        return [property.id, property.value];
+      }
+    }));
 };
 
 const getDynamicDummyProperties = (
-  componentDefinitionData: ComponentDefinitionData,
-  componentData?: ComponentData,
+  componentDefinition: ComponentInfo,
+  componentData?: ElementInfo,
 ) => {
   if (!componentData) {
     return {};
   }
   const { properties } = componentData;
-  return entries(properties, (entities) =>
-    entities
-      .filter(([key, value]) => value.type === 'dynamic' && value.dynamicId)
-      .map<[string, any]>(([key, value]) => [
-        key,
-        componentDefinitionData.properties[value.dynamicId!].dummy,
-      ]),
-  );
+  return reduceEntries(properties
+    .filter((property) => property.type === 'dynamic' && property.dynamicId)
+    .map<[string, any]>((property) => {
+      if (!property.dynamicId) {
+        return [property.id, undefined];
+      }
+      const propertyDefinition = get(componentDefinition.dynamicDefinitions.properties, property.dynamicId);
+      if (!propertyDefinition) {
+        const dataDefinition = get(componentDefinition.dynamicDefinitions.data, property.dynamicId);
+        if (dataDefinition) {
+          return [property.id, dataDefinition.dummy];
+        }
+        return [property.id, undefined];
+      }
+      return [property.id, propertyDefinition.dummy];
+    }));
 };
 
-const getComponentStyles = (componentDefinition: ComponentDefinitionData, componentData?: ComponentData) => {
+const getComponentStyles = (componentDefinition: ComponentInfo | undefined, componentData?: ElementInfo) => {
+  if (!componentDefinition) {
+    return '';
+  }
   if (!componentData) {
     return '';
   }
-  const classInfo = componentData.properties.class;
+  const classInfo = get(componentData.properties, 'class');
   if (!classInfo) {
     return '';
   }
@@ -152,19 +169,13 @@ const getComponentStyles = (componentDefinition: ComponentDefinitionData, compon
     return '';
   }
   const styleClasses = classInfo.value as string[];
-  return styleClasses.map((styleClass) => style[styleClass] || '').join(' ');
-};
-
-const getComponent = (componentData?: ComponentData) => {
-  if (!componentData) {
-    return undefined;
-  }
-  if (componentData.element) {
-    return componentData.element;
-  }
-  if (componentData.component) {
-    return InternalVue().options.components[componentData.component];
-  }
+  return styleClasses.map((styleClass) => {
+    const currentStyle = get(style, styleClass);
+    if (!currentStyle) {
+      return '';
+    }
+    return currentStyle.value || '';
+  }).join(' ');
 };
 </script>
 
@@ -193,7 +204,10 @@ const getComponent = (componentData?: ComponentData) => {
   pointer-events: none !important;
 }
 .slot-container {
-  background-color: lightgrey;
+  border-color: lightgrey !important;
+  border-style: solid !important;
+  border-radius: 5px !important;
+  border-width: 0.6px !important;
   padding: 4px;
   border-radius: 5px;
   width: 100%;

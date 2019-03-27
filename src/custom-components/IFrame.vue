@@ -5,12 +5,6 @@
 <script lang='ts'>
 import { Component, Prop } from 'vue-property-decorator';
 import Vue, { VNode, VNodeData } from 'vue';
-import {
-  ComponentDefinitionData,
-  LinkData,
-  ScriptData,
-} from '@/models';
-import ComponentWrapper from '@/components/ComponentWrapper.vue';
 
 type FrameApp = { children: Readonly<VNode[]> | undefined } & object &
   Record<never, any> &

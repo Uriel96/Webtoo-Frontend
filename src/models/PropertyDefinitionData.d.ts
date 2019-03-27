@@ -1,4 +1,5 @@
-export interface PropertyDefinitionData {
+export interface PropertyDefinition {
+  id: string;
   name: string;
   type: string;
   defaultValue: any;

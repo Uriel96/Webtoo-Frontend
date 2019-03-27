@@ -7,21 +7,21 @@
     group-name="design"
   >
     <component-wrapper
-      v-for="child in slotData"
+      v-for="child in slotData.value"
       :key="child"
       :entryId="child"
       :componentDefinitionData="componentDefinitionData"
-      :componentsDefinitionData="componentsDefinitionData"
     />
   </container>
-  <div v-else>{{ slotData }}</div>
+  <div v-else>{{ slotData.value }}</div>
 </template>
 
 <script lang="ts">
 import ExtendedVue from '@/ExtendedVue';
 import { Component, Prop } from 'vue-property-decorator';
 import { Container } from 'vue-smooth-dnd';
-import { DroppedResult, ComponentData, ComponentsDefinitionData, ComponentDefinitionData, SlotData } from '@/models';
+import { DroppedResult, ElementInfo, ComponentInfo, SlotData } from '@/models';
+import { get } from '@/utilities';
 
 @Component({
   components: {
@@ -30,24 +30,36 @@ import { DroppedResult, ComponentData, ComponentsDefinitionData, ComponentDefini
   },
 })
 export default class SlotWrapper extends ExtendedVue {
-  @Prop() public componentsDefinitionData!: ComponentsDefinitionData;
-  @Prop() public componentDefinitionData!: ComponentDefinitionData;
+  @Prop() public componentDefinitionData!: ComponentInfo;
   @Prop() public entryId!: string;
-  @Prop() public slotData!: string[] | string;
-  @Prop() public slotId!: string;
+  @Prop() public slotData!: SlotData;
 
   get componentData() {
-    const { template } = this.componentDefinitionData;
-    return template ? template[this.entryId] : undefined;
+    const { elements } = this.componentDefinitionData;
+    return elements ? elements.find((x) => x.id === this.entryId) : undefined;
   }
 
   get isSlotList() {
-    return this.slotData instanceof Array;
+    if (!this.slotInfo) {
+      return false;
+    }
+    return this.slotInfo.type === 'list-property';
+  }
+
+  get slotInfo() {
+    if (!this.componentData) {
+      return;
+    }
+    const a = this.editor.getComponentInfo(this.componentData);
+    if (!a) {
+      return;
+    }
+    return get(a.slots, this.slotData.id);
   }
 
   public getChildPayload(index: number) {
     return {
-      componentId: this.slotData[index],
+      componentId: this.slotData.value[index],
     };
   }
 
@@ -63,7 +75,7 @@ export default class SlotWrapper extends ExtendedVue {
     const newPayload = {
       draggedId: componentId,
       droppedId: this.entryId,
-      slotId: this.slotId,
+      slotId: this.slotData.id,
       removedIndex,
       addedIndex,
     };
@@ -75,3 +87,9 @@ export default class SlotWrapper extends ExtendedVue {
   }
 }
 </script>
+
+<style scoped>
+.slot-container {
+  padding: 5px;
+}
+</style>

@@ -7,41 +7,41 @@
     v-model="selectedDynamicData"
     @input="updateDynamic"
     :options="dynamicOptions"
-    style="border-top-left-radius: 0px; border-bottom-left-radius: 0px;"
   ></sui-dropdown>
 </template>
 
 <script lang="ts">
 import ExtendedVue from '@/ExtendedVue';
 import { Prop, Component } from 'vue-property-decorator';
-import { PropertyDefinitionData, Properties } from '@/models';
+import { PropertyDefinition } from '@/models';
 
 @Component({})
 export default class DynamicField extends ExtendedVue {
-  @Prop() public propertyDef!: PropertyDefinitionData;
+  @Prop() public propertyDef!: PropertyDefinition;
   @Prop() public value!: string;
 
   public selectedDynamicData = this.value;
 
-  get componentDynamicData(): Properties {
-    return this.editor.currentComponentDefinitionData.properties;
+  get componentDynamicData() {
+    const { currentComponentDefinitionData } = this.editor;
+    if (!currentComponentDefinitionData) {
+      return [];
+    }
+    const { properties, data } = currentComponentDefinitionData.dynamicDefinitions;
+    return [...properties, ...data];
   }
-  get validDynamicData(): Properties {
-    return Object.entries(this.componentDynamicData)
-      .filter(([key, value]) => value.type === this.propertyDef.type)
-      .reduce((obj, [k, v]) => ({ ...obj, [k]: v }), {});
+  get validDynamicData() {
+    return this.componentDynamicData
+      .filter((property) => property.type === this.propertyDef.type);
   }
-  get dynamicOptions(): Array<{
-    text: string;
-    value: string;
-  }> {
-    return Object.entries(this.validDynamicData).map(([key, value]) => ({
-      text: key,
-      value: key,
+  get dynamicOptions() {
+    return this.validDynamicData.map((property) => ({
+      text: property.name,
+      value: property.id,
     }));
   }
 
-  public updateDynamic(value: string): void {
+  public updateDynamic(value: string) {
     this.$emit('input', value);
   }
 }

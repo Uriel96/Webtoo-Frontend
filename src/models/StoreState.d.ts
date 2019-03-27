@@ -1,10 +1,10 @@
 import { Pane } from '@/models';
-import { ComponentDefinitionData } from './ComponentDefinitionData';
+import { ComponentInfo } from './ComponentInfo';
 
 export interface DesignEditorState {
   structure: Pane;
   currentTab: string;
-  componentsDefinitionData: { [key: string]: ComponentDefinitionData };
+  componentsDefinitionData: { [key: string]: ComponentInfo };
   currentComponentId: string;
   selectedComponentId: string | undefined;
 }

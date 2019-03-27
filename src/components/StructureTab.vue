@@ -10,7 +10,7 @@
 import ExtendedVue from '@/ExtendedVue';
 import { Component } from 'vue-property-decorator';
 import ElementsTree from '@/components/ElementsTree.vue';
-import { Template, TreeStructure } from '@/models';
+import { ElementInfo, TreeStructure } from '@/models';
 
 @Component({
   name: 'components-tab',
@@ -25,14 +25,14 @@ export default class StructureTab extends ExtendedVue {
 
   get currentTemplate() {
     const componentDef = this.editor.currentComponentDefinitionData;
-    if (!componentDef.template || !componentDef.entryId) {
+    if (!componentDef || !componentDef.elements || !componentDef.entryId) {
       return [];
     }
-    return this.getStructure(componentDef.template, componentDef.entryId);
+    return this.getStructure(componentDef.elements, componentDef.entryId);
   }
 
-  public getStructure(template: Template, entryId: string) {
-    return getStructure(template, entryId);
+  public getStructure(elements: ElementInfo[], entryId: string) {
+    return getStructure(elements, entryId);
   }
 
   public selectComponent(elementId: string) {
@@ -46,17 +46,17 @@ export default class StructureTab extends ExtendedVue {
 }
 
 // TODO: Move to another place.
-const getStructure = (template: Template, entryId: string): TreeStructure[] => {
-  const componentData = template[entryId];
+const getStructure = (elements: ElementInfo[], entryId: string): TreeStructure[] => {
+  const componentData = elements.find((x) => x.id === entryId);
   if (!componentData || !componentData.slots) {
     return [];
   }
-  const slots = Object.entries(componentData.slots).map(([slotId, slot]) => {
+  const slots = componentData.slots.map((slot) => {
     let children = slot.value;
     if (children instanceof Array) {
-      children = slot.value.map((childId: string) => getStructure(template, childId)).flat(1);
+      children = slot.value.map((childId: string) => getStructure(elements, childId)).flat(1);
     }
-    return { id: entryId, title: slotId, children };
+    return { id: entryId, title: slot.id, children };
   });
   return [{ id: entryId, title: componentData.name, children: slots }];
 };

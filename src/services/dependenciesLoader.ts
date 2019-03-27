@@ -1,6 +1,7 @@
-import { LinkData, ScriptData, ComponentDefinitionData } from '@/models';
+import { LinkData, ScriptData, ComponentInfo, LibraryInfo } from '@/models';
 
-export const loadScripts = (scripts: ScriptData[], container: Element) => {
+export const loadScripts = (libraries: LibraryInfo[], container: Element) => {
+  const scripts = libraries.flatMap((lib) => lib.scripts);
   return Promise.all(scripts.map((script) => loadScript(script, container)));
 };
 export const loadScript = (script: ScriptData, container: Element) => {
@@ -16,7 +17,8 @@ export const loadScript = (script: ScriptData, container: Element) => {
     container.appendChild(newScript);
   });
 };
-export const loadLinks = (links: LinkData[], container: Element) => {
+export const loadLinks = (libraries: LibraryInfo[], container: Element) => {
+  const links = libraries.flatMap((lib) => lib.links);
   return Promise.all(links.map((link) => loadLink(link, container)));
 };
 export const loadLink = (link: LinkData, container: Element) => {
@@ -37,21 +39,16 @@ export const loadLink = (link: LinkData, container: Element) => {
     container.appendChild(newLink);
   });
 };
-export const loadDependencies = (componentDefinition: ComponentDefinitionData) => {
+export const loadDependencies = (libraries: LibraryInfo[]) => {
   return new Promise((resolve, reject) => {
-    const { scripts, links } = componentDefinition;
-    if (links) {
-      loadLinks(links, document.head).then(() => {
-        if (scripts) {
-          const scriptsContainer = document.getElementById('scripts-container');
-          if (scriptsContainer) {
-            loadScripts(scripts, scriptsContainer)
-              .then(() => {
-                resolve();
-              }).catch((error) => reject(error));
-          }
-        }
-      }).catch((error) => reject(error));
-    }
+    loadLinks(libraries, document.head).then(() => {
+      const scriptsContainer = document.getElementById('scripts-container');
+      if (scriptsContainer) {
+        loadScripts(libraries, scriptsContainer)
+          .then(() => {
+            resolve();
+          }).catch((error) => reject(error));
+      }
+    }).catch((error) => reject(error));
   });
 };

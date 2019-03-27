@@ -1,9 +1,9 @@
 import { defaultLayoutStructure } from '@/configuration/editorLayout';
-import { ComponentData, ComponentDefinitionData, Pane, DropPayload, PropertyData } from '@/models';
+import { ElementInfo, ComponentInfo, Pane, DropPayload, PropertyData, LibraryInfo } from '@/models';
 import { Module, VuexModule, Mutation, getModule } from 'vuex-module-decorators';
-import { componentsDefinitionData } from '../temporal_data/data';
+import { componentsDefinitionData, libraries } from '../temporal_data/data';
 import store from '@/store';
-import { reduceEntries, createUID, entries } from '@/utilities';
+import { createUID, entries, get } from '@/utilities';
 
 @Module({
   namespaced: true,
@@ -17,6 +17,7 @@ export class DesignEditorModule extends VuexModule {
   public componentsDefinitionData = componentsDefinitionData;
   public currentComponentId: string = 'user1/pack1/HelloExample';
   public selectedComponentId: string | undefined = 'button-1';
+  public libraries = libraries;
 
   @Mutation
   public toggleTab(tab: string) {
@@ -35,12 +36,19 @@ export class DesignEditorModule extends VuexModule {
     const { draggedId, droppedId, slotId, removedIndex, addedIndex } = payload;
     const draggedComponent = componentData(this, draggedId);
     const droppedComponent = componentData(this, droppedId);
-    const template = currentComponentDefinitionData(this).template;
-    if (!template || !draggedComponent || !droppedComponent) {
+    const componentDefinition = currentComponentDefinitionData(this);
+    if (!componentDefinition) {
+      return;
+    }
+    const { elements } = componentDefinition;
+    if (!elements || !draggedComponent || !droppedComponent) {
       return;
     }
     if (droppedComponent.slots) {
-      const currentSlot = droppedComponent.slots[slotId];
+      const currentSlot = get(droppedComponent.slots, slotId);
+      if (!currentSlot) {
+        return;
+      }
       if (removedIndex !== null) {
         currentSlot.value.splice(removedIndex, 1);
       }
@@ -52,72 +60,95 @@ export class DesignEditorModule extends VuexModule {
   @Mutation
   public addComponent(payload: DropPayload) {
     const { draggedId, droppedId, slotId, removedIndex, addedIndex } = payload;
-    const draggedComponentDefinition = this.componentsDefinitionData[draggedId];
-    const draggedComponentId = draggedComponentDefinition.name;
-    const pieces = draggedId.split('/');
-    pieces.pop();
-    const path = pieces.join('/');
-    const properties = entries(draggedComponentDefinition.properties, (entities) =>
-      entities.map<[string, PropertyData]>(([key, prop]) =>
-        ([key, { type: 'static', value: prop.defaultValue }]),
-      ),
-    );
-    const slots = entries(draggedComponentDefinition.slots, (entities) =>
-      entities.map<[string, PropertyData]>(([key, slot]) =>
-        ([key, { type: 'static', value: slot.defaultValue }]),
-      ),
-    );
-    const temp: ComponentData = {
-      name: draggedComponentId + '-1',
-      component: draggedComponentId ? draggedComponentId : undefined,
-      element: draggedComponentId ? undefined : path,
-      path: draggedComponentId ? path : undefined,
+    const draggedComponentDefinition = get(this.componentsDefinitionData, draggedId);
+    if (!draggedComponentDefinition) {
+      return;
+    }
+    const properties = draggedComponentDefinition.dynamicDefinitions.properties
+      .map((property) =>
+        ({ id: property.id, type: 'static', value: property.defaultValue } as PropertyData),
+      );
+    const slots = draggedComponentDefinition.slots
+      .map((slot) =>
+        ({ id: slot.id, type: 'static', value: slot.defaultValue } as PropertyData),
+      );
+    const newId = `${draggedId}-${createUID()}`;
+    const temp: ElementInfo = {
+      id: newId,
+      name: draggedComponentDefinition.name + '-1',
+      componentId: draggedId,
       properties,
       slots,
     };
-    const newId = `${draggedComponentId}-${createUID()}`;
-    const { template } = currentComponentDefinitionData(this);
-    if (!template) {
+    const componentDefinition = currentComponentDefinitionData(this);
+    if (!componentDefinition) {
       return;
     }
-    currentComponentDefinitionData(this).template = {
-      ...template,
-      [newId]: temp,
-    };
+    const { elements } = componentDefinition;
+    if (!elements) {
+      return;
+    }
+    componentDefinition.elements = [
+      ...elements,
+      temp,
+    ];
     const doppedComponentData = componentData(this, droppedId);
     if (!doppedComponentData || !doppedComponentData.slots) {
       return;
     }
-    doppedComponentData.slots[slotId].value.splice(addedIndex, 0, newId);
+    const droppedSlot = get(doppedComponentData.slots, slotId);
+    if (!droppedSlot) {
+      return;
+    }
+    droppedSlot.value.splice(addedIndex, 0, newId);
   }
   @Mutation
   public initializeProperties() {
-    if (!currentComponentDefinitionData(this)) {
+    const componentInfo = currentComponentDefinitionData(this);
+    if (!componentInfo) {
       return;
     }
-    const { template } = currentComponentDefinitionData(this);
-    if (!template) {
+    const { elements } = componentInfo;
+    if (!elements) {
       return;
     }
-    for (const [componentId, compData] of Object.entries(template)) {
-      const componentDefinition = getComponentInfo(this, compData);
+    for (const element of elements) {
+      const componentDefinition = getComponentInfo(this, element.componentId);
       if (componentDefinition) {
-        for (const [propertyId, compDefProp] of Object.entries(componentDefinition.properties)) {
-          if (!compData.properties[propertyId]) {
-            template[componentId].properties = {
-              ...template[componentId].properties,
-              [propertyId]: {
-                type: 'static', value: compDefProp.defaultValue,
+        for (const propertyDef of componentDefinition.dynamicDefinitions.properties) {
+          const propertyData = get(element.properties, propertyDef.id);
+          if (!propertyData) {
+            element.properties = [
+              ...element.properties,
+              {
+                id: propertyDef.id,
+                type: 'static', value: propertyDef.defaultValue,
                 dynamicId: null,
               },
-            };
+            ];
           }
         }
       }
     }
   }
 
+  get getComponentDefinition() {
+    return (id: string) => {
+      return get(this.componentsDefinitionData, id);
+    };
+  }
+  get getLibrary() {
+    return (id: string) => {
+      return get(this.libraries, id);
+    };
+  }
 
+  get dependencies() {
+    return (libraryId: string) => {
+      const library = get(this.libraries, libraryId);
+      return getDependencies(this, library);
+    };
+  }
   get currentComponentDefinitionData() {
     return currentComponentDefinitionData(this);
   }
@@ -133,43 +164,73 @@ export class DesignEditorModule extends VuexModule {
     return selectedComponentInfo(this);
   }
   get getComponentInfo() {
-    return (data: ComponentData) => {
-      return getComponentInfo(this, data);
+    return (data: ElementInfo) => {
+      return getComponentInfo(this, data.componentId);
+    };
+  }
+  get selectedPropertyData() {
+    return (propertyId: string) => {
+      if (!this.selectedComponent) {
+        return;
+      }
+      return get(this.selectedComponent.properties, propertyId);
+    };
+  }
+  get selectedSlotData() {
+    return (slotId: string) => {
+      if (!this.selectedComponent || !this.selectedComponent.slots) {
+        return;
+      }
+      return get(this.selectedComponent.slots, slotId);
     };
   }
 }
 
 const currentComponentDefinitionData = (self: DesignEditorModule) => {
-  return self.componentsDefinitionData[self.currentComponentId];
+  return get(self.componentsDefinitionData, self.currentComponentId);
 };
 const componentData = (self: DesignEditorModule, componentId: string) => {
-  const template = currentComponentDefinitionData(self).template;
-  if (!template) {
+  const componentDefinition = currentComponentDefinitionData(self);
+  if (!componentDefinition) {
     return;
   }
-  return template[componentId];
+  const { elements } = componentDefinition;
+  if (!elements) {
+    return;
+  }
+  return get(elements, componentId);
 };
-const selectedComponent = (self: DesignEditorModule): ComponentData | undefined => {
+const selectedComponent = (self: DesignEditorModule): ElementInfo | undefined => {
   if (!self.selectedComponentId) {
     return;
   }
   return componentData(self, self.selectedComponentId);
 };
-const selectedComponentInfo = (self: DesignEditorModule): ComponentDefinitionData | undefined => {
+const selectedComponentInfo = (self: DesignEditorModule): ComponentInfo | undefined => {
   const selectedComp = selectedComponent(self);
   if (!selectedComp) {
     return;
   }
-  const { path, component, element } = selectedComp;
-  const componentName = path ? `${path}/${component}` : element;
-  if (!componentName) {
-    return;
+  return get(self.componentsDefinitionData, selectedComp.componentId);
+};
+const getComponentInfo = (self: DesignEditorModule, componentId: string) => {
+  return get(self.componentsDefinitionData, componentId);
+};
+const getDependencies = (self: DesignEditorModule, library?: LibraryInfo): LibraryInfo[] => {
+  if (!library) {
+    return [];
   }
-  return self.componentsDefinitionData[componentName];
+  return library.dependencies.filter((x) => x.library).flatMap((dep) => {
+    if (!dep.library) {
+      return [];
+    }
+    const currentLib = get(self.libraries, dep.library);
+    if (!currentLib) {
+      return [];
+    }
+    return [currentLib, ...getDependencies(self, currentLib)];
+  });
 };
-const getComponentInfo = (self: DesignEditorModule, { path, component }: ComponentData) => {
-  const componentName = `${path}/${component}`;
-  return self.componentsDefinitionData[componentName];
-};
+
 
 export default getModule(DesignEditorModule, store);

@@ -1,4 +1,5 @@
 export interface PropertyData {
+  id: string;
   type: TypeData;
   value: any;
   dynamicId?: string | null;
@@ -6,6 +7,7 @@ export interface PropertyData {
 }
 
 export interface SlotData {
+  id: string;
   type: TypeData;
   value: any;
   dynamicId?: string | null;

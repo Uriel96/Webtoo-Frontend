@@ -9,6 +9,7 @@ import { Component } from 'vue-property-decorator';
 import DesignEntry from '@/components/DesignEntry.vue';
 import { loadDependencies } from '@/services/dependenciesLoader';
 import { InternalVue, setInternalVueConfiguration, setInternalVueGlobals, defaultTemplate } from '@/utilities';
+import { LibraryInfo } from '@/models';
 
 @Component
 export default class DesignTab extends ExtendedVue {
@@ -16,10 +17,19 @@ export default class DesignTab extends ExtendedVue {
 
   public mounted() {
     const componentDefinition = this.editor.currentComponentDefinitionData;
-    const contentTemplate = componentDefinition.contentTemplate || defaultTemplate;
-    loadDependencies(componentDefinition).then(() => {
+    if (!componentDefinition) {
+      return;
+    }
+    const library = this.editor.getLibrary(componentDefinition.libraryId);
+    const contentTemplate =
+      (library ? library.contentTemplate : undefined) ||
+      componentDefinition.contentTemplate ||
+      defaultTemplate;
+    const libraries = this.editor.dependencies(componentDefinition.libraryId);
+
+    loadDependencies(libraries).then(() => {
       setInternalVueConfiguration();
-      setInternalVueGlobals(componentDefinition);
+      setInternalVueGlobals(libraries);
       this.addEntryComponent(contentTemplate);
     }).catch((error) => {
       throw new Error(error);
