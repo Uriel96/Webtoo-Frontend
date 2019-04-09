@@ -11,6 +11,7 @@
           <div v-for="property in properties" :key="property.name">
             <component
               :is="getPropertyComponent(property)"
+              :elementId="elementId"
               :propertyDef="property"
               :propertyData="getPropertyData(property.id)"
             />
@@ -24,7 +25,7 @@
           <div v-for="slot in slots" :key="slot.id">
             <component
               :is="getPropertyComponent(slot)"
-              :propertyId="slot.id"
+              :elementId="elementId"
               :propertyDef="slot"
               :propertyData="getSlotData(slot.id)"
             />

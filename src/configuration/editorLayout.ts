@@ -10,14 +10,14 @@ export const defaultLayoutStructure: Pane = {
       components: ['leftPane', 'rightPane'],
     },
     leftPane: {
-      default: 30,
+      default: 40,
       min: 20,
       max: 40,
       opened: true,
       component: LeftLayout,
     },
     rightPane: {
-      default: 70,
+      default: 60,
       opened: true,
       component: DesignTab,
     },

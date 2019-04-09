@@ -26,7 +26,7 @@ export const helloExample: ComponentInfo = {
         {
           id: 'children',
           type: 'static',
-          value: ['button-1'],
+          value: ['button-1', 'button-2'],
         },
       ],
     },
@@ -40,6 +40,19 @@ export const helloExample: ComponentInfo = {
           id: 'content',
           type: 'static',
           value: 'Click Me!',
+        },
+      ],
+    },
+    {
+      id: 'button-2',
+      name: 'Button 2',
+      componentId: 'semantic-ui-vue/SuiButton',
+      properties: [],
+      slots: [
+        {
+          id: 'content',
+          type: 'static',
+          value: 'Click Me 2!',
         },
       ],
     },
