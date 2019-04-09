@@ -9,8 +9,8 @@
     <component-wrapper
       v-for="child in slotData.value"
       :key="child"
-      :entryId="child"
-      :componentDefinitionData="componentDefinitionData"
+      :elementId="child"
+      :componentId="componentId"
     />
   </container>
   <div v-else>{{ slotData.value }}</div>
@@ -30,31 +30,28 @@ import { get } from '@/utilities';
   },
 })
 export default class SlotWrapper extends ExtendedVue {
-  @Prop() public componentDefinitionData!: ComponentInfo;
-  @Prop() public entryId!: string;
+  @Prop() public componentId!: string;
+  @Prop() public elementId!: string;
   @Prop() public slotData!: SlotData;
 
-  get componentData() {
-    const { elements } = this.componentDefinitionData;
-    return elements ? elements.find((x) => x.id === this.entryId) : undefined;
+  get element() {
+    return this.editor.getElement(this.componentId, this.elementId);
   }
-
   get isSlotList() {
     if (!this.slotInfo) {
       return false;
     }
     return this.slotInfo.type === 'list-property';
   }
-
   get slotInfo() {
-    if (!this.componentData) {
+    if (!this.element) {
       return;
     }
-    const a = this.editor.getComponentInfo(this.componentData);
-    if (!a) {
+    const elementComponent = this.editor.getComponent(this.element.componentId);
+    if (!elementComponent) {
       return;
     }
-    return get(a.slots, this.slotData.id);
+    return get(elementComponent.slots, this.slotData.id);
   }
 
   public getChildPayload(index: number) {
@@ -74,12 +71,12 @@ export default class SlotWrapper extends ExtendedVue {
     const { componentId } = dropResult.payload;
     const newPayload = {
       draggedId: componentId,
-      droppedId: this.entryId,
+      droppedId: this.elementId,
       slotId: this.slotData.id,
       removedIndex,
       addedIndex,
     };
-    if (payload.type === 'component-definition') {
+    if (payload.type === 'component-info') {
       this.editor.addComponent(newPayload);
     } else {
       this.editor.switchComponent(newPayload);

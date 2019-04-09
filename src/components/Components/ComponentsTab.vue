@@ -1,9 +1,9 @@
 <template>
   <sui-card-group style="margin: 10px">
-    <sui-accordion exclusive inverted>
+    <sui-accordion inverted>
       <div v-for="library in libraries" :key="library.id">
         <sui-accordion-title>
-          <sui-card style="border-radius: 2px; box-shadow: none;">
+          <sui-card class="library-card">
             <sui-card-content>
               <sui-card-header>
                 <sui-icon name="dropdown"/>
@@ -12,7 +12,7 @@
             </sui-card-content>
           </sui-card>
         </sui-accordion-title>
-        <sui-accordion-content>
+        <sui-accordion-content style="padding-left: 6px;">
           <library-components :libraryId="library.id"/>
         </sui-accordion-content>
       </div>
@@ -25,7 +25,7 @@ import ExtendedVue from '@/ExtendedVue';
 import { Component } from 'vue-property-decorator';
 import { ComponentInfo } from '@/models';
 import { Container, Draggable } from 'vue-smooth-dnd';
-import LibraryComponents from '@/components/LibraryComponents.vue';
+import LibraryComponents from '@/components/Components/LibraryComponents.vue';
 
 @Component({
   name: 'components-tab',
@@ -33,11 +33,11 @@ import LibraryComponents from '@/components/LibraryComponents.vue';
 })
 export default class ComponentsTab extends ExtendedVue {
   get libraries() {
-    const componentDefinition = this.editor.currentComponentDefinitionData;
-    if (!componentDefinition) {
+    const componentInfo = this.editor.currentComponent;
+    if (!componentInfo) {
       return [];
     }
-    const library = this.editor.getLibrary(componentDefinition.libraryId);
+    const library = this.editor.getLibrary(componentInfo.libraryId);
     if (!library) {
       return [];
     }
@@ -51,40 +51,13 @@ export default class ComponentsTab extends ExtendedVue {
       });
     return [...otherLibraries, library];
   }
-
-  get allComponents() {
-    const componentDefinition = this.editor.currentComponentDefinitionData;
-    if (!componentDefinition) {
-      return [];
-    }
-    const library = this.editor.getLibrary(componentDefinition.libraryId);
-    if (!library) {
-      return [];
-    }
-    const otherComponents = library.dependencies.map((x) => x.library)
-      .flatMap((x) => {
-        const lib = this.editor.getLibrary(x || '');
-        if (!lib) {
-          return [];
-        }
-        return lib.components;
-      });
-    return [...otherComponents, ...library.components];
-  }
-
-  public getComponentDefinition(componentId: string) {
-    return this.editor.getComponentDefinition(componentId);
-  }
-
-  public getChildPayload(component: ComponentInfo, componentId: string) {
-    return (index: any) => ({
-      component,
-      componentId,
-      type: 'component-definition',
-    });
-  }
 }
 </script>
 
-<style scope>
+<style scoped>
+.library-card {
+  border-radius: 2px !important;
+  box-shadow: none !important;
+  background-color: rgb(219, 224, 248) !important;
+}
 </style>

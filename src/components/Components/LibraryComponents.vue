@@ -3,7 +3,7 @@
     <container
       v-for="componentId in components"
       :key="componentId"
-      :get-child-payload="getChildPayload(component, componentId)"
+      :get-child-payload="getChildPayload(componentId)"
       style="width: 100%; margin-top: 10px; margin: bottom: 10px;"
       group-name="design"
       :should-accept-drop="() => false"
@@ -11,7 +11,7 @@
       <draggable style="cursor: pointer;">
         <sui-card style="border-radius: 2px; box-shadow: none;">
           <sui-card-content>
-            <sui-card-header>{{getComponentDefinition(componentId).name}}</sui-card-header>
+            <sui-card-header>{{getComponent(componentId).name}}</sui-card-header>
           </sui-card-content>
         </sui-card>
       </draggable>
@@ -40,19 +40,18 @@ export default class LibraryComponents extends ExtendedVue {
     return library.components;
   }
 
-  public getComponentDefinition(componentId: string) {
-    return this.editor.getComponentDefinition(componentId);
+  public getComponent(componentId: string) {
+    return this.editor.getComponent(componentId);
   }
 
-  public getChildPayload(component: ComponentInfo, componentId: string) {
+  public getChildPayload(componentId: string) {
     return (index: any) => ({
-      component,
       componentId,
-      type: 'component-definition',
+      type: 'component-info',
     });
   }
 }
 </script>
 
-<style scope>
+<style scoped>
 </style>

@@ -8,7 +8,7 @@
 
 <script lang='ts'>
 import ExtendedVue from '@/ExtendedVue';
-import { Component } from 'vue-property-decorator';
+import { Component, Prop } from 'vue-property-decorator';
 import ElementsTree from '@/components/ElementsTree.vue';
 import { ElementInfo, TreeStructure } from '@/models';
 
@@ -17,6 +17,9 @@ import { ElementInfo, TreeStructure } from '@/models';
   components: { 'elements-tree': ElementsTree },
 })
 export default class StructureTab extends ExtendedVue {
+  @Prop() public componentId!: string;
+  @Prop() public elementId!: string;
+
   public elements: TreeStructure[] = [];
 
   public mounted() {
@@ -24,15 +27,19 @@ export default class StructureTab extends ExtendedVue {
   }
 
   get currentTemplate() {
-    const componentDef = this.editor.currentComponentDefinitionData;
-    if (!componentDef || !componentDef.elements || !componentDef.entryId) {
+    const componentInfo = this.editor.currentComponent;
+    if (!componentInfo || !componentInfo.elements || !componentInfo.entryId) {
       return [];
     }
-    return this.getStructure(componentDef.elements, componentDef.entryId);
+    return this.getStructure(componentInfo.entryId);
   }
 
-  public getStructure(elements: ElementInfo[], entryId: string) {
-    return getStructure(elements, entryId);
+  public getStructure(entryId: string) {
+    const component = this.editor.getComponent(this.componentId);
+    if (!component) {
+      return [];
+    }
+    return this.editor.getStructure(this.componentId, component.entryId);
   }
 
   public selectComponent(elementId: string) {
@@ -44,23 +51,7 @@ export default class StructureTab extends ExtendedVue {
     this.editor.toggleTab('properties-tab');
   }
 }
-
-// TODO: Move to another place.
-const getStructure = (elements: ElementInfo[], entryId: string): TreeStructure[] => {
-  const componentData = elements.find((x) => x.id === entryId);
-  if (!componentData || !componentData.slots) {
-    return [];
-  }
-  const slots = componentData.slots.map((slot) => {
-    let children = slot.value;
-    if (children instanceof Array) {
-      children = slot.value.map((childId: string) => getStructure(elements, childId)).flat(1);
-    }
-    return { id: entryId, title: slot.id, children };
-  });
-  return [{ id: entryId, title: componentData.name, children: slots }];
-};
 </script>
 
-<style scope>
+<style scoped>
 </style>

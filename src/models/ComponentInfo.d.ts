@@ -1,11 +1,8 @@
-import { ElementInfo } from './ComponentData';
+import { ElementInfo } from './ElementInfo';
 import { PropertyDefinition } from '@/models/PropertyDefinitionData';
 import { FunctionDefinition } from '@/models/FunctionDefinition';
 import { SlotDefinition } from './SlotDefinitionData';
 
-// TODO: Change PropertyData, SlotData
-// TODO: Add Data
-// TODO: Change Slots
 export interface LibraryInfo {
   id: string;
   name: string;
@@ -67,10 +64,6 @@ export interface Definition {
   name: string;
   type: string;
   dummy?: any;
-}
-
-export interface Data {
-  [name: string]: any;
 }
 export interface ScriptData {
   src: string;

@@ -49,10 +49,10 @@ export default class BooleanProperty extends ExtendedVue {
   }
 
   get styles() {
-    if (!this.editor.currentComponentDefinitionData) {
+    if (!this.editor.currentComponent) {
       return;
     }
-    return this.editor.currentComponentDefinitionData.style;
+    return this.editor.currentComponent.style;
   }
 
   get styleOptions() {

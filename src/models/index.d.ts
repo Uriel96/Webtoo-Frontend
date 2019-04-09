@@ -1,4 +1,4 @@
-export * from './ComponentData';
+export * from './ElementInfo';
 export * from './ComponentInfo';
 export * from './FunctionDefinition';
 export * from './PropertyData';

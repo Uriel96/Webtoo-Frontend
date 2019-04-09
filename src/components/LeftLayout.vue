@@ -14,7 +14,7 @@
       </sui-menu-item>
     </sui-menu>
     <div class="full-size tab-container">
-      <component :is="currentTab"></component>
+      <component :is="currentTab" :componentId="componentId" :elementId="elementId"></component>
     </div>
   </div>
 </template>
@@ -23,32 +23,9 @@
 import ExtendedVue from '@/ExtendedVue';
 import { Component, Prop } from 'vue-property-decorator';
 import PropertiesTab from '@/components/Properties/PropertiesTab.vue';
-import ComponentsTab from '@/components/ComponentsTab.vue';
+import ComponentsTab from '@/components/Components/ComponentsTab.vue';
 import StructureTab from '@/components/StructureTab.vue';
-
-// TODO: Move to aonther place. (make it a plugin)
-const menuItems = [
-  {
-    name: 'components-tab',
-    title: 'Components',
-    icon: 'puzzle',
-  },
-  {
-    name: 'structure-tab',
-    title: 'Structure',
-    icon: 'sitemap',
-  },
-  {
-    name: 'properties-tab',
-    title: 'Properties',
-    icon: 'list',
-  },
-  {
-    name: 'code-tab',
-    title: 'Code',
-    icon: 'code',
-  },
-];
+import { menuItems } from '@/configuration/menuItems';
 
 @Component({
   components: {
@@ -60,6 +37,12 @@ const menuItems = [
 export default class LeftLayout extends ExtendedVue {
   public menuItems = menuItems;
 
+  get componentId() {
+    return this.editor.currentComponentId;
+  }
+  get elementId() {
+    return this.editor.selectedElementId;
+  }
   get currentTab(): string {
     return this.editor.currentTab;
   }
@@ -73,7 +56,7 @@ export default class LeftLayout extends ExtendedVue {
 }
 </script>
 
-<style scope>
+<style scoped>
 .left-layout-container {
   background-color: #13171e !important;
   display: flex !important;

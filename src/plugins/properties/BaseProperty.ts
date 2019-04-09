@@ -6,10 +6,10 @@ export default abstract class BaseProperty extends ExtendedVue {
   public propertyDef!: PropertyDefinition;
 
   get propertyData() {
-    if (!this.editor.selectedComponent) {
+    if (!this.editor.selectedElement) {
       return;
     }
-    return get(this.editor.selectedComponent.properties, this.propertyDef.id);
+    return get(this.editor.selectedElement.properties, this.propertyDef.id);
   }
   get isDynamic() {
     if (!this.propertyData) {

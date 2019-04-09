@@ -1,23 +1,23 @@
 <template>
   <draggable
     :class="{
-      'selected-component-container' : isSelectedComponent,
-      'component-container': !isSelectedComponent
+      'selected-element-container' : isSelectedElement,
+      'element-container': !isSelectedElement
     }"
   >
     <div @click.stop="selectComponent">
       <component
-        :is="properComponent"
+        :is="componentData"
         v-bind="componentProperties"
         :style="componentStyles"
-        class="real-component"
+        class="real-element"
       >
         <template v-for="slot in slots">
           <slot-wrapper
             :key="slot.id"
             :slotData="slot"
-            :entryId="entryId"
-            :componentDefinitionData="componentDefinitionData"
+            :elementId="elementId"
+            :componentId="componentId"
           />
         </template>
       </component>
@@ -44,143 +44,50 @@ import SlotWrapper from '@/components/SlotWrapper.vue';
   },
 })
 export default class ComponentWrapper extends ExtendedVue {
-  @Prop() public componentsDefinitionData!: ComponentInfo[];
-  @Prop() public componentDefinitionData!: ComponentInfo;
-  @Prop() public entryId!: string;
+  @Prop() public componentId!: string;
+  @Prop() public elementId!: string;
 
-  get componentData() {
-    const { elements } = this.componentDefinitionData;
-    return elements ? elements.find((x) => x.id === this.entryId) : undefined;
-  }
   get slots() {
-    return getStaticSlots(this.componentData);
+    const { getStaticSlots } = this.editor;
+    return getStaticSlots(this.componentId, this.elementId);
   }
-  get properComponent() {
-    if (!this.componentData) {
+  get componentData() {
+    const { getElement, getComponent } = this.editor;
+    const elementInfo = getElement(this.componentId, this.elementId);
+    if (!elementInfo) {
       return;
     }
-    const componentDefinition = this.editor.getComponentDefinition(this.componentData.componentId);
-    if (!componentDefinition) {
+    const elementComponent = getComponent(elementInfo.componentId);
+    if (!elementComponent) {
       return;
     }
-    if (componentDefinition.isHTMLTag) {
-      return componentDefinition.name;
+    if (elementComponent.isHTMLTag) {
+      return elementComponent.name;
     }
-    return InternalVue().options.components[componentDefinition.name];
+    return InternalVue().options.components[elementComponent.name];
   }
   get componentProperties() {
-    const compData = this.editor.componentData(this.entryId);
-    if (!compData) {
-      return [];
-    }
-    const componentDef = this.editor.getComponentInfo(compData);
-    const staticProperties = getStaticProperties(componentDef, this.componentData);
-    const dynamicDummyProperties = getDynamicDummyProperties(this.componentDefinitionData, this.componentData);
+    const { getStaticProperties, getDynamicDummyProperties } = this.editor;
+    const staticProperties = getStaticProperties(this.componentId, this.elementId);
+    const dynamicDummyProperties = getDynamicDummyProperties(this.componentId, this.elementId);
     return { ...staticProperties, ...dynamicDummyProperties };
   }
   get componentStyles() {
-    const componentDefinition = this.editor.currentComponentDefinitionData;
-    return getComponentStyles(componentDefinition, this.componentData);
+    const { getComponentStyles } = this.editor;
+    return getComponentStyles(this.componentId, this.elementId);
   }
-  get isSelectedComponent() {
-    return this.editor.selectedComponentId === this.entryId;
+  get isSelectedElement() {
+    return this.editor.selectedElementId === this.elementId;
   }
 
   public selectComponent() {
-    this.editor.setSelectedComponent(this.entryId);
+    this.editor.setSelectedComponent(this.elementId);
   }
 }
-
-// TODO: Move to another place.
-const getStaticSlots = (componentData?: ElementInfo) => {
-  if (!componentData) {
-    return [];
-  }
-  const { slots } = componentData;
-  if (!slots) {
-    return [];
-  }
-  return slots
-    .filter((slot) => slot.type === 'static');
-};
-
-const getStaticProperties = (componentDefinition: ComponentInfo | undefined, componentData?: ElementInfo) => {
-  if (!componentData) {
-    return {};
-  }
-  if (!componentDefinition) {
-    return {};
-  }
-  const { properties } = componentData;
-  return reduceEntries(properties
-    .filter((property) => property.type === 'static')
-    .map<[string, any]>((property) => {
-      const propertyDefinition = get(componentDefinition.dynamicDefinitions.properties, property.id);
-      if (!propertyDefinition) {
-        return [property.id, undefined];
-      }
-      if (propertyDefinition.type === 'boolean-property') {
-        return [property.id, property.value === 'true'];
-      } else {
-        return [property.id, property.value];
-      }
-    }));
-};
-
-const getDynamicDummyProperties = (
-  componentDefinition: ComponentInfo,
-  componentData?: ElementInfo,
-) => {
-  if (!componentData) {
-    return {};
-  }
-  const { properties } = componentData;
-  return reduceEntries(properties
-    .filter((property) => property.type === 'dynamic' && property.dynamicId)
-    .map<[string, any]>((property) => {
-      if (!property.dynamicId) {
-        return [property.id, undefined];
-      }
-      const propertyDefinition = get(componentDefinition.dynamicDefinitions.properties, property.dynamicId);
-      if (!propertyDefinition) {
-        const dataDefinition = get(componentDefinition.dynamicDefinitions.data, property.dynamicId);
-        if (dataDefinition) {
-          return [property.id, dataDefinition.dummy];
-        }
-        return [property.id, undefined];
-      }
-      return [property.id, propertyDefinition.dummy];
-    }));
-};
-
-const getComponentStyles = (componentDefinition: ComponentInfo | undefined, componentData?: ElementInfo) => {
-  if (!componentDefinition) {
-    return '';
-  }
-  if (!componentData) {
-    return '';
-  }
-  const classInfo = get(componentData.properties, 'class');
-  if (!classInfo) {
-    return '';
-  }
-  const { style } = componentDefinition;
-  if (!style) {
-    return '';
-  }
-  const styleClasses = classInfo.value as string[];
-  return styleClasses.map((styleClass) => {
-    const currentStyle = get(style, styleClass);
-    if (!currentStyle) {
-      return '';
-    }
-    return currentStyle.value || '';
-  }).join(' ');
-};
 </script>
 
-<style scope>
-.selected-component-container {
+<style scoped>
+.selected-element-container {
   padding: 2px;
   margin: 2px;
   border-color: orange !important;
@@ -190,7 +97,7 @@ const getComponentStyles = (componentDefinition: ComponentInfo | undefined, comp
   pointer-events: auto !important;
   cursor: pointer !important;
 }
-.component-container {
+.element-container {
   padding: 2px;
   margin: 2px;
   border-color: #8caec2 !important;
@@ -200,7 +107,7 @@ const getComponentStyles = (componentDefinition: ComponentInfo | undefined, comp
   pointer-events: auto !important;
   cursor: pointer !important;
 }
-.real-component {
+.real-element {
   pointer-events: none !important;
 }
 .slot-container {

@@ -8,6 +8,7 @@
       <template slot="right">
         <input
           v-if="!isDynamic"
+          disabled
           inverted
           :placeholder="propertyDef.name"
           v-model="propertyData.value"
@@ -57,10 +58,10 @@ export default class ListProperty extends ExtendedVue {
   }
 
   get options() {
-    if (!this.editor.currentComponentDefinitionData || !this.editor.currentComponentDefinitionData.elements) {
+    if (!this.editor.currentComponent || !this.editor.currentComponent.elements) {
       return [];
     }
-    return this.editor.currentComponentDefinitionData.elements
+    return this.editor.currentComponent.elements
       .map((element) => ({ value: element.id, text: element.name }));
   }
 }

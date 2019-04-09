@@ -35,7 +35,7 @@ export default class ComponentEditor extends ExtendedVue {
 }
 </script>
 
-<style scope>
+<style scoped>
 .component-editor {
   height: 100vh;
 }

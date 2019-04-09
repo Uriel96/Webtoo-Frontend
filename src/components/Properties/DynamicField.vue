@@ -23,11 +23,11 @@ export default class DynamicField extends ExtendedVue {
   public selectedDynamicData = this.value;
 
   get componentDynamicData() {
-    const { currentComponentDefinitionData } = this.editor;
-    if (!currentComponentDefinitionData) {
+    const { currentComponent } = this.editor;
+    if (!currentComponent) {
       return [];
     }
-    const { properties, data } = currentComponentDefinitionData.dynamicDefinitions;
+    const { properties, data } = currentComponent.dynamicDefinitions;
     return [...properties, ...data];
   }
   get validDynamicData() {

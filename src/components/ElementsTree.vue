@@ -47,12 +47,12 @@ import { TreeStructure } from '@/models';
 export default class ElementsTree extends ExtendedVue {
   @Prop() public elements!: TreeStructure[];
 
-  get selectedComponentId() {
-    return this.editor.selectedComponentId;
+  get selectedElementId() {
+    return this.editor.selectedElementId;
   }
 
   public isSelected(element: TreeStructure) {
-    return this.selectedComponentId === element.id;
+    return this.selectedElementId === element.id;
   }
 
   @Emit()
@@ -66,12 +66,13 @@ export default class ElementsTree extends ExtendedVue {
 }
 </script>
 
-<style scope>
+<style scoped>
 .element-button {
   padding-left: 5px !important;
   text-align: left !important;
 }
 .element-container {
+  border-style: none !important;
   padding: 2px !important;
 }
 .children-container {

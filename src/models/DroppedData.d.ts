@@ -10,7 +10,7 @@ export interface DroppedPayload {
   componentId: string;
   type: DroppedPayloadType;
 }
-export type DroppedPayloadType = 'component-definition' | undefined;
+export type DroppedPayloadType = 'component-info' | undefined;
 
 export interface DropPayload {
   draggedId: string;

@@ -19,6 +19,7 @@
     "v-runtime-template": "^1.6.2",
     "vue": "^2.6.6",
     "vue-class-component": "^6.0.0",
+    "vue-custom-element": "^3.2.6",
     "vue-property-decorator": "^7.0.0",
     "vue-resize-split-pane": "^0.1.3",
     "vue-router": "^3.0.1",

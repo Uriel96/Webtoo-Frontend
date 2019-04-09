@@ -36,19 +36,33 @@ export const suiinput: ComponentInfo = {
       {
         id: 'icon',
         name: 'Icon',
-        type: 'text-property',
-        defaultValue: null,
-      },
-      {
-        id: 'iconPosition',
-        name: 'Icon',
         type: 'options-property',
-        defaultValue: 'left',
+        defaultValue: null,
         data: {
           options: [
             { value: '', text: 'Empty' },
             { value: 'circle', text: 'Circle', icon: 'circle' },
             { value: 'heart', text: 'Heart', icon: 'heart' },
+          ],
+        },
+      },
+      {
+        id: 'iconPosition',
+        name: 'Icon Position',
+        type: 'options-property',
+        defaultValue: 'left',
+        data: {
+          options: [
+            {
+              value: 'left',
+              text: 'Left',
+              icon: 'hand point left outline',
+            },
+            {
+              value: 'right',
+              text: 'Right',
+              icon: 'hand point right outline',
+            },
           ],
         },
       },

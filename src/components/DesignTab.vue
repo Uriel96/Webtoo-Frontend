@@ -7,26 +7,34 @@ import { VueConstructor } from 'vue';
 import ExtendedVue from '@/ExtendedVue';
 import { Component } from 'vue-property-decorator';
 import DesignEntry from '@/components/DesignEntry.vue';
-import { loadDependencies } from '@/services/dependenciesLoader';
+import { loadDependencies, loadScripts, loadScript, loadLinks } from '@/services/dependenciesLoader';
 import { InternalVue, setInternalVueConfiguration, setInternalVueGlobals, defaultTemplate } from '@/utilities';
-import { LibraryInfo } from '@/models';
+import { LibraryInfo, LinkData } from '@/models';
+import vueCustomElement from 'vue-custom-element';
+import { Container, Draggable } from 'vue-smooth-dnd';
 
 @Component
 export default class DesignTab extends ExtendedVue {
   public entryComponent: VueConstructor | null = null;
 
-  public mounted() {
-    const componentDefinition = this.editor.currentComponentDefinitionData;
-    if (!componentDefinition) {
+  get library() {
+    const componentInfo = this.editor.currentComponent;
+    if (!componentInfo) {
       return;
     }
-    const library = this.editor.getLibrary(componentDefinition.libraryId);
-    const contentTemplate =
-      (library ? library.contentTemplate : undefined) ||
-      componentDefinition.contentTemplate ||
-      defaultTemplate;
-    const libraries = this.editor.dependencies(componentDefinition.libraryId);
+    return this.editor.getLibrary(componentInfo.libraryId);
+  }
 
+  public mounted() {
+    const componentInfo = this.editor.currentComponent;
+    if (!componentInfo) {
+      return;
+    }
+    const contentTemplate =
+      (this.library ? this.library.contentTemplate : undefined) ||
+      componentInfo.contentTemplate ||
+      defaultTemplate;
+    const libraries = this.editor.getDependencies(componentInfo.libraryId);
     loadDependencies(libraries).then(() => {
       setInternalVueConfiguration();
       setInternalVueGlobals(libraries);
@@ -49,5 +57,5 @@ export default class DesignTab extends ExtendedVue {
 }
 </script>
 
-<style scope>
+<style scoped>
 </style>

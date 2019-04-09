@@ -6,7 +6,7 @@ import { vbtn } from './vbtn';
 import { div } from './div';
 import { suiinput } from './suiinput';
 
-export const componentsDefinitionData: ComponentInfo[] = [
+export const temporalComponentsInfo: ComponentInfo[] = [
   helloExample,
   example2,
   suibutton,

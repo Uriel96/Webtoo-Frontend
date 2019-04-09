@@ -6,7 +6,7 @@
           <sui-form v-if="editing" @submit.prevent="editing = false">
             <sui-form-field>
               <sui-input
-                v-model="selectedComponent.name"
+                v-model="element.name"
                 @focus="editing = false"
                 @blur="editing = false"
                 class="name-input"
@@ -14,7 +14,7 @@
             </sui-form-field>
           </sui-form>
           <span v-else @dblclick="editing = true" class="name-title">
-            <b>{{selectedComponent.name}}</b>
+            <b>{{element.name}}</b>
           </span>
         </sui-list-content>
       </sui-list-item>
@@ -37,28 +37,32 @@ import { ElementInfo } from '@/models';
   name: 'properties-title',
 })
 export default class PropertiesTitle extends ExtendedVue {
-  @Prop() public selectedComponent!: ElementInfo;
+  @Prop() public componentId!: string;
+  @Prop() public elementId!: string;
 
   public editing = false;
 
-  get componentDefinition() {
-    return this.editor.getComponentDefinition(this.selectedComponent.componentId);
+  get element() {
+    return this.editor.getElement(this.componentId, this.elementId);
   }
-  get relativePath() {
-    if (!this.componentDefinition) {
+  get elementComponent() {
+    if (!this.element) {
       return;
     }
-    const library = this.editor.getLibrary(this.componentDefinition.libraryId);
+    return this.editor.getComponent(this.element.componentId);
+  }
+  get relativePath() {
+    if (!this.elementComponent) {
+      return;
+    }
+    const library = this.editor.getLibrary(this.elementComponent.libraryId);
     if (!library) {
       return;
     }
     return library.name;
   }
   get componentName() {
-    if (!this.componentDefinition) {
-      return;
-    }
-    return this.componentDefinition.name;
+    return this.elementComponent ? this.elementComponent.name : undefined;
   }
 }
 </script>

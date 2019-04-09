@@ -1,7 +1,7 @@
 <template>
   <div class="properties-container">
     <sui-form inverted @submit.prevent.stop="() => {}">
-      <properties-title :selectedComponent="selectedComponent"/>
+      <properties-title :componentId="componentId" :elementId="elementId"/>
       <sui-accordion exclusive inverted>
         <sui-accordion-title active>
           <sui-icon name="dropdown"/>Properties
@@ -21,7 +21,7 @@
         </sui-accordion-title>
         <sui-accordion-content active>
           <!-- Slots Fields -->
-          <div v-for="slot in slots" :key="slot.name">
+          <div v-for="slot in slots" :key="slot.id">
             <component
               :is="getPropertyComponent(slot)"
               :propertyId="slot.id"
@@ -37,11 +37,10 @@
 
 <script lang="ts">
 import ExtendedVue from '@/ExtendedVue';
-import { Component } from 'vue-property-decorator';
+import { Component, Prop } from 'vue-property-decorator';
 import { PropertyDefinition } from '@/models';
 import PropertiesTitle from '@/components/Properties/PropertiesTitle.vue';
 import { mapTypesToComponent } from '@/configuration/propertyType';
-import { get } from '@/utilities';
 import { SlotDefinition } from '@/models/SlotDefinitionData';
 
 @Component({
@@ -51,16 +50,16 @@ import { SlotDefinition } from '@/models/SlotDefinitionData';
   },
 })
 export default class PropertiesTab extends ExtendedVue {
-  get selectedComponent() {
-    return this.editor.selectedComponent;
-  }
+  @Prop() public componentId!: string;
+  @Prop() public elementId!: string;
+
   get properties() {
-    const { selectedComponentInfo } = this.editor;
-    return selectedComponentInfo ? selectedComponentInfo.dynamicDefinitions.properties : [];
+    const { selectedComponent } = this.editor;
+    return selectedComponent ? selectedComponent.dynamicDefinitions.properties : [];
   }
   get slots() {
-    const { selectedComponentInfo } = this.editor;
-    return selectedComponentInfo ? selectedComponentInfo.slots : [];
+    const { selectedComponent } = this.editor;
+    return selectedComponent ? selectedComponent.slots : [];
   }
 
   public getPropertyData(propertyId: string) {

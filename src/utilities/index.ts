@@ -66,6 +66,6 @@ export const createUID = () => {
   return uid.randomUUID(6);
 };
 
-export const get = <T extends { id: string }>(elements: T[], id: string): T | undefined => {
+export const get = <T extends { id: string }>(elements: T[], id: string | undefined): T | undefined => {
   return elements.find((x) => x.id === id);
 };

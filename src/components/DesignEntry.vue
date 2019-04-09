@@ -1,10 +1,6 @@
 <template>
   <container class="drop-container">
-    <component-wrapper
-      :entryId="componentDefinitionData.entryId"
-      :componentDefinitionData="componentDefinitionData"
-      :componentsDefinitionData="componentsDefinitionData"
-    ></component-wrapper>
+    <component-wrapper :elementId="componentInfo.entryId" :componentId="componentInfo.id"></component-wrapper>
   </container>
 </template>
 
@@ -21,11 +17,8 @@ import { Container } from 'vue-smooth-dnd';
   },
 })
 export default class DesignEntry extends ExtendedVue {
-  get componentDefinitionData() {
-    return this.editor.currentComponentDefinitionData;
-  }
-  get componentsDefinitionData() {
-    return this.editor.componentsDefinitionData;
+  get componentInfo() {
+    return this.editor.currentComponent;
   }
 }
 </script>

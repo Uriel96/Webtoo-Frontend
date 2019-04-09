@@ -46,7 +46,7 @@ export default class EditorStructure extends ExtendedVue {
 }
 </script>
 
-<style scope>
+<style scoped>
 .splitpanes__splitter {
   background-color: rgba(44, 65, 73, 0.05);
   position: relative;

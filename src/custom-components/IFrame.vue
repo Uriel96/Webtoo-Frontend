@@ -41,7 +41,7 @@ export default class IFrame extends Vue {
 }
 </script>
 
-<style scope>
+<style scoped>
 .custom-frame {
   margin: 0px;
   padding: 0px;
