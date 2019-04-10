@@ -21,7 +21,7 @@
           <sui-icon name="dropdown"/>Slots
         </sui-accordion-title>
         <sui-accordion-content active>
-          <!-- Slots Fields -->
+          <!-- Slots -->
           <div v-for="slot in slots" :key="slot.id">
             <component
               :is="getPropertyComponent(slot)"
@@ -41,7 +41,7 @@ import ExtendedVue from '@/ExtendedVue';
 import { Component, Prop } from 'vue-property-decorator';
 import { PropertyDefinition } from '@/models';
 import PropertiesTitle from '@/components/Properties/PropertiesTitle.vue';
-import { mapTypesToComponent } from '@/configuration/propertyType';
+import { types } from '@/configuration/propertyType';
 import { SlotDefinition } from '@/models/SlotDefinitionData';
 
 @Component({
@@ -70,7 +70,11 @@ export default class PropertiesTab extends ExtendedVue {
     return this.editor.selectedSlotData(slotId);
   }
   public getPropertyComponent(property: PropertyDefinition) {
-    return mapTypesToComponent[property.type];
+    const type = types.find((x) => x.value === property.type);
+    if (!type) {
+      return;
+    }
+    return type.component;
   }
 }
 </script>

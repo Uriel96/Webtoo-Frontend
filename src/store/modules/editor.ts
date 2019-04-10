@@ -1,5 +1,7 @@
 import { defaultLayoutStructure } from '@/configuration/editorLayout';
-import { ElementInfo, ComponentInfo, Pane, DropPayload, PropertyData, LibraryInfo, TreeStructure } from '@/models';
+import {
+  ElementInfo, ComponentInfo, Pane, DropPayload, PropertyData, LibraryInfo, TreeStructure, Definition,
+} from '@/models';
 import { Module, VuexModule, Mutation, getModule } from 'vuex-module-decorators';
 import { temporalComponentsInfo, libraries } from '../temporal_data/data';
 import store from '@/store';
@@ -308,15 +310,18 @@ const getDynamicDummyProperties = (
       if (!property.dynamicId) {
         return [property.id, undefined];
       }
-      const propertyDefinition = get(componentInfo.dynamicDefinitions.properties, property.dynamicId);
-      if (!propertyDefinition) {
-        const dataDefinition = get(componentInfo.dynamicDefinitions.data, property.dynamicId);
-        if (dataDefinition) {
-          return [property.id, dataDefinition.dummy];
-        }
+      let definition: Definition | undefined = get(componentInfo.dynamicDefinitions.properties, property.dynamicId);
+      if (!definition) {
+        definition = get(componentInfo.dynamicDefinitions.data, property.dynamicId);
+      }
+      if (!definition) {
         return [property.id, undefined];
       }
-      return [property.id, propertyDefinition.dummy];
+      if (definition.type === 'boolean-property') {
+        return [property.id, definition.dummy === 'true'];
+      } else {
+        return [property.id, definition.dummy];
+      }
     }));
 };
 const getComponentStyles = (

@@ -58,10 +58,6 @@ export default class ListProperty extends ExtendedVue {
   @Prop() public propertyDef!: PropertyDefinition;
   @Prop() public propertyData!: PropertyData;
 
-  public mounted() {
-    console.log(this.elementId);
-  }
-
   get isDynamic() {
     if (!this.propertyData) {
       return;

@@ -26,12 +26,14 @@ import PropertiesTab from '@/components/Properties/PropertiesTab.vue';
 import ComponentsTab from '@/components/Components/ComponentsTab.vue';
 import StructureTab from '@/components/StructureTab.vue';
 import { menuItems } from '@/configuration/menuItems';
+import ComponentPropertiesTab from './ComponentPropertiesTab.vue';
 
 @Component({
   components: {
     'properties-tab': PropertiesTab,
     'components-tab': ComponentsTab,
     'structure-tab': StructureTab,
+    'component-properties-tab': ComponentPropertiesTab,
   },
 })
 export default class LeftLayout extends ExtendedVue {

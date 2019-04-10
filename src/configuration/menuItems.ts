@@ -19,4 +19,9 @@ export const menuItems = [
     title: 'Code',
     icon: 'code',
   },
+  {
+    name: 'component-properties-tab',
+    title: 'Component',
+    icon: 'list',
+  },
 ];
