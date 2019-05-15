@@ -11,8 +11,8 @@ export const defaultLayoutStructure: Pane = {
     },
     leftPane: {
       default: 40,
-      min: 20,
-      max: 40,
+      min: 0,
+      max: 80,
       opened: true,
       component: LeftLayout,
     },

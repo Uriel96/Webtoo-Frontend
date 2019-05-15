@@ -1,27 +1,33 @@
 import { LibraryInfo, ComponentInfo } from '@/models';
-import { helloExample } from './helloExample';
+import { semanticExample } from './suiExample';
 import { example2 } from './example2';
 import { suibutton } from './suibutton';
 import { vbtn } from './vbtn';
 import { div } from './div';
 import { suiinput } from './suiinput';
+import { paragraph, span } from './paragraph';
+import { suilist, suilistitem } from './suiList';
 
 export const temporalComponentsInfo: ComponentInfo[] = [
-  helloExample,
+  semanticExample,
   example2,
   suibutton,
   suiinput,
+  suilist,
+  suilistitem,
   vbtn,
   div,
+  paragraph,
+  span,
 ];
 
 export const libraries: LibraryInfo[] = [
   {
-    id: 'user1/pack1',
-    name: 'User Pack1',
+    id: 'UrielS/MyPack',
+    name: 'User MyPack',
     globals: [],
     components: [
-      'user1/pack1/HelloExample',
+      'UrielS/MyPack/SemanticExample',
     ],
     dependencies: [
       {
@@ -93,6 +99,8 @@ export const libraries: LibraryInfo[] = [
     components: [
       'semantic-ui-vue/SuiButton',
       'semantic-ui-vue/SuiInput',
+      'semantic-ui-vue/SuiList',
+      'semantic-ui-vue/SuiListItem',
     ],
     dependencies: [
     ],
@@ -119,6 +127,8 @@ export const libraries: LibraryInfo[] = [
     ],
     components: [
       'main/div',
+      'main/paragraph',
+      'main/span',
     ],
     dependencies: [
     ],

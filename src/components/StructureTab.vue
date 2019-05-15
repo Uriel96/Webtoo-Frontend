@@ -1,5 +1,6 @@
 <template>
   <elements-tree
+    class="element-tree full-size tab-container"
     :elements="elements"
     @select="selectComponent($event)"
     @dblclick="showProperties($event)"
@@ -54,4 +55,7 @@ export default class StructureTab extends ExtendedVue {
 </script>
 
 <style scoped>
+.element-tree {
+  padding: 10px !important;
+}
 </style>

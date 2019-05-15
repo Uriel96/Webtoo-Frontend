@@ -1,6 +1,8 @@
 <template>
   <div id="app">
-    <router-view/>
+    <portal-target name="semantic-ui-vue">
+      <router-view/>
+    </portal-target>
   </div>
 </template>
 
@@ -43,5 +45,14 @@ body {
 .full-size {
   height: 100%;
   width: 100%;
+}
+.tab-container {
+  overflow-y: auto !important;
+}
+.no-padding {
+  padding: 0px !important;
+}
+.no-margin {
+  margin: 0px !important;
 }
 </style>

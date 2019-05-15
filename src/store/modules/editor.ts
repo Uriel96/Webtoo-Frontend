@@ -1,6 +1,6 @@
 import { defaultLayoutStructure } from '@/configuration/editorLayout';
 import {
-  ElementInfo, ComponentInfo, Pane, DropPayload, PropertyData, LibraryInfo, TreeStructure, Definition,
+  ElementInfo, ComponentInfo, Pane, DropPayload, PropertyData, LibraryInfo, TreeStructure, Definition, EventData,
 } from '@/models';
 import { Module, VuexModule, Mutation, getModule } from 'vuex-module-decorators';
 import { temporalComponentsInfo, libraries } from '../temporal_data/data';
@@ -15,11 +15,12 @@ import { createUID, get, reduceEntries } from '@/utilities';
 })
 export class DesignEditorModule extends VuexModule {
   public structure: Pane = defaultLayoutStructure;
-  public currentTab = '';
+  public currentTab = 'properties-tab';
   public components = temporalComponentsInfo;
-  public currentComponentId: string = 'user1/pack1/HelloExample';
+  public currentComponentId: string = 'UrielS/MyPack/SemanticExample';
   public selectedElementId: string | undefined = 'button-1';
   public libraries = libraries;
+  public isDraggingElement = false;
 
   @Mutation
   public toggleTab(tab: string) {
@@ -28,6 +29,23 @@ export class DesignEditorModule extends VuexModule {
     } else {
       this.currentTab = tab;
     }
+  }
+  @Mutation
+  public setDraggingElement(value: boolean) {
+    this.isDraggingElement = value;
+  }
+  @Mutation
+  public updateElement(componentId: string, element: ElementInfo) {
+    const component = getComponent(this, componentId);
+    if (!component || !component.elements) {
+      return;
+    }
+    component.elements = component.elements.map((x) => {
+      if (element.id === x.id) {
+        return element;
+      }
+      return x;
+    });
   }
   @Mutation
   public setSelectedComponent(componentId: string) {
@@ -70,6 +88,10 @@ export class DesignEditorModule extends VuexModule {
       .map((property) =>
         ({ id: property.id, type: 'static', value: property.defaultValue } as PropertyData),
       );
+    const events = draggedComponentInfo.dynamicDefinitions.events
+      .map((event) =>
+        ({ id: event.id, type: 'static', value: event.defaultValue, arguments: [] } as EventData),
+      );
     const slots = draggedComponentInfo.slots
       .map((slot) =>
         ({ id: slot.id, type: 'static', value: slot.defaultValue } as PropertyData),
@@ -81,6 +103,7 @@ export class DesignEditorModule extends VuexModule {
       componentId: draggedId,
       properties,
       slots,
+      events,
     };
     const componentInfo = currentComponent(this);
     if (!componentInfo) {
@@ -134,6 +157,17 @@ export class DesignEditorModule extends VuexModule {
       return get(this.libraries, libraryId);
     };
   }
+  get definition() {
+    return (componentId: string, id: string) => {
+      const component = getComponent(this, componentId);
+      if (!component) {
+        return;
+      }
+      const { properties, data, functions, events } = component.dynamicDefinitions;
+      const definitions = [...properties, ...data, ...functions, ...events];
+      return get(definitions, id);
+    };
+  }
   get getDependencies() {
     return (libraryId: string) => {
       const library = get(this.libraries, libraryId);
@@ -143,6 +177,15 @@ export class DesignEditorModule extends VuexModule {
   get getElement() {
     return (componentId: string | undefined, elementId: string | undefined) => {
       return getElement(this, componentId, elementId);
+    };
+  }
+  get getElementComponent() {
+    return (componentId: string | undefined, elementId: string | undefined) => {
+      const element = getElement(this, componentId, elementId);
+      if (!element) {
+        return;
+      }
+      return getComponent(this, element.componentId);
     };
   }
   get getComponent() {
@@ -164,6 +207,14 @@ export class DesignEditorModule extends VuexModule {
         return;
       }
       return get(this.selectedElement.slots, slotId);
+    };
+  }
+  get selectedEventData() {
+    return (eventId: string) => {
+      if (!this.selectedElement || !this.selectedElement.events) {
+        return;
+      }
+      return get(this.selectedElement.events, eventId);
     };
   }
   get getStaticSlots() {
@@ -189,6 +240,22 @@ export class DesignEditorModule extends VuexModule {
   get getStructure() {
     return (componentId: string | undefined, elementId: string | undefined) => {
       return getStructure(this, componentId, elementId);
+    };
+  }
+  get getExternalDefinitions() {
+    return (componentId?: string | undefined, elementId?: string | undefined) => {
+      let currentElement = getElement(this, componentId, elementId);
+      const a = [];
+      if (!currentElement) {
+        return [];
+      }
+      while (currentElement.parentId != null) {
+        if (currentElement.repeated) {
+          a.push(currentElement.repeat);
+        }
+        currentElement = getElement(this, componentId, currentElement.parentId);
+      }
+      return a;
     };
   }
 
@@ -286,7 +353,7 @@ const getStaticProperties = (
       if (!propertyDefinition) {
         return [property.id, undefined];
       }
-      if (propertyDefinition.type === 'boolean-property') {
+      if (propertyDefinition.type === 'boolean') {
         return [property.id, property.value === 'true'];
       } else {
         return [property.id, property.value];
@@ -317,7 +384,7 @@ const getDynamicDummyProperties = (
       if (!definition) {
         return [property.id, undefined];
       }
-      if (definition.type === 'boolean-property') {
+      if (definition.type === 'boolean') {
         return [property.id, definition.dummy === 'true'];
       } else {
         return [property.id, definition.dummy];

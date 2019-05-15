@@ -2,7 +2,7 @@
   <sui-form @submit.prevent.stop="() => {}" style="margin: 2px">
     <sui-form-field>
       <label>Name</label>
-      <input v-model="property.name" placeholder="My Property">
+      <input v-model="propertyDef.name" placeholder="My Property">
     </sui-form-field>
     <sui-form-field>
       <label>Value Type</label>
@@ -11,18 +11,18 @@
         fluid
         floating
         placeholder="Type"
-        v-model="property.type"
-        @input="() => { property.defaultValue = undefined; property.dummy = undefined; }"
+        v-model="propertyDef.type"
+        @input="() => { propertyDef.defaultValue = undefined; propertyDef.dummy = undefined; }"
         :options="types"
       ></sui-dropdown>
     </sui-form-field>
     <sui-form-field>
       <label>Default Value</label>
-      <component :is="fieldComponent" v-model="property.defaultValue" placeholder="Empty"/>
+      <component :is="fieldComponent" v-model="propertyDef.defaultValue" placeholder="Empty"/>
     </sui-form-field>
     <sui-form-field>
       <label>Dummy</label>
-      <component :is="fieldComponent" v-model="property.dummy" placeholder="Empty"/>
+      <component :is="fieldComponent" v-model="propertyDef.dummy" placeholder="Empty"/>
     </sui-form-field>
   </sui-form>
 </template>
@@ -35,11 +35,11 @@ import { PropertyDefinition } from '@/models';
 
 @Component
 export default class PropertyDefinitionFields extends ExtendedVue {
-  @Prop() public property!: PropertyDefinition;
+  @Prop() public propertyDef!: PropertyDefinition;
   public types = types;
 
   get fieldComponent() {
-    const type = this.types.find((x) => x.value === this.property.type);
+    const type = this.types.find((x) => x.value === this.propertyDef.type);
     if (!type) {
       return;
     }

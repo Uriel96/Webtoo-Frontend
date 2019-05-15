@@ -12,7 +12,13 @@
           v-model="propertyData.dynamicId"
           :propertyDef="propertyDef"
         />
-        <input v-else inverted :placeholder="propertyDef.name" v-model="propertyData.value">
+        <input
+          v-else
+          inverted
+          type="number"
+          :placeholder="propertyDef.name"
+          v-model="propertyData.value"
+        >
       </template>
     </fields-group>
   </sui-form-field>

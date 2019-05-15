@@ -46,32 +46,32 @@ export default class EditorStructure extends ExtendedVue {
 }
 </script>
 
-<style scoped>
+<style>
 .splitpanes__splitter {
-  background-color: rgba(44, 65, 73, 0.05);
-  position: relative;
+  background-color: rgba(44, 65, 73, 0.5) !important;
+  position: relative !important;
 }
 .splitpanes__splitter:before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0;
-  transition: opacity 0.4s;
-  background-color: rgba(44, 65, 73, 0.1);
-  opacity: 0;
-  z-index: 1;
+  content: "" !important;
+  position: absolute !important;
+  left: 0 !important;
+  top: 0 !important;
+  transition: opacity 0.4s !important;
+  background-color: rgba(44, 65, 73, 0.01) !important;
+  opacity: 0 !important;
+  z-index: 1 !important;
 }
 .splitpanes__splitter:hover:before {
-  opacity: 1;
+  opacity: 1 !important;
 }
 .splitpanes--vertical > .splitpanes__splitter:before {
-  left: -3px;
-  right: -3px;
-  height: 100%;
+  left: -6px !important;
+  right: -6px !important;
+  height: 100% !important;
 }
 .splitpanes--horizontal > .splitpanes__splitter:before {
-  top: -3px;
-  bottom: -3px;
-  width: 100%;
+  top: -6px !important;
+  bottom: -6px !important;
+  width: 100% !important;
 }
 </style>

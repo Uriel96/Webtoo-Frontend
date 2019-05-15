@@ -8,6 +8,7 @@ import '@/registerServiceWorker';
 import CustomComponents from '@/custom-components';
 import editor from '@/store/modules/editor';
 import App from '@/App.vue';
+import PortalVue from 'portal-vue';
 
 // Pass editor data
 Vue.mixin({
@@ -21,6 +22,7 @@ Vue.mixin({
 Vue.use(VueHotkey);
 Vue.use(SuiVue);
 Vue.use(CustomComponents);
+Vue.use(PortalVue);
 Vue.config.productionTip = false;
 
 new Vue({

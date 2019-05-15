@@ -14,3 +14,4 @@ export * from './KeyBindings/PerformAction';
 export * from './PropertyBindings';
 export * from './TreeStructure';
 export * from './DroppedData';
+export * from './SlotDefinitionData';

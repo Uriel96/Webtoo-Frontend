@@ -3,13 +3,14 @@ import { ComponentInfo } from '@/models';
 export const div: ComponentInfo = {
   id: 'main/div',
   libraryId: 'main',
-  name: 'div',
+  name: 'Div',
+  tagName: 'div',
   isHTMLTag: true,
   slots: [
     {
-      id: 'children',
-      name: 'Children',
-      type: 'list-property',
+      id: 'default',
+      name: 'Default',
+      type: 'list',
       defaultValue: [],
     },
   ],
@@ -20,7 +21,7 @@ export const div: ComponentInfo = {
       {
         id: 'align',
         name: 'Align',
-        type: 'options-property',
+        type: 'options',
         defaultValue: 'left',
         data: {
           options: [
@@ -34,9 +35,10 @@ export const div: ComponentInfo = {
       {
         id: 'class',
         name: 'Class',
-        type: 'style-property',
+        type: 'style',
         defaultValue: [],
       },
     ],
+    events: [],
   },
 };

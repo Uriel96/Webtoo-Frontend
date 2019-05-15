@@ -13,9 +13,7 @@
         {{menuItem.title}}
       </sui-menu-item>
     </sui-menu>
-    <div class="full-size tab-container">
-      <component :is="currentTab" :componentId="componentId" :elementId="elementId"></component>
-    </div>
+    <component :is="currentTab" :componentId="componentId" :elementId="elementId"></component>
   </div>
 </template>
 
@@ -25,8 +23,9 @@ import { Component, Prop } from 'vue-property-decorator';
 import PropertiesTab from '@/components/Properties/PropertiesTab.vue';
 import ComponentsTab from '@/components/Components/ComponentsTab.vue';
 import StructureTab from '@/components/StructureTab.vue';
+import ComponentPropertiesTab from '@/components/ComponentPropertiesTab.vue';
+import CodeTab from '@/components/CodeTab.vue';
 import { menuItems } from '@/configuration/menuItems';
-import ComponentPropertiesTab from './ComponentPropertiesTab.vue';
 
 @Component({
   components: {
@@ -34,6 +33,7 @@ import ComponentPropertiesTab from './ComponentPropertiesTab.vue';
     'components-tab': ComponentsTab,
     'structure-tab': StructureTab,
     'component-properties-tab': ComponentPropertiesTab,
+    'code-tab': CodeTab,
   },
 })
 export default class LeftLayout extends ExtendedVue {

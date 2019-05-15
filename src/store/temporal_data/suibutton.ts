@@ -4,6 +4,7 @@ export const suibutton: ComponentInfo = {
   id: 'semantic-ui-vue/SuiButton',
   libraryId: 'semantic-ui-vue',
   name: 'SuiButton',
+  tagName: 'sui-button',
   slots: [],
   dynamicDefinitions: {
     data: [],
@@ -12,13 +13,13 @@ export const suibutton: ComponentInfo = {
       {
         id: 'primary',
         name: 'Primary',
-        type: 'boolean-property',
-        defaultValue: 'true',
+        type: 'boolean',
+        defaultValue: 'false',
       },
       {
         id: 'icon',
         name: 'Icon',
-        type: 'options-property',
+        type: 'options',
         defaultValue: '',
         data: {
           options: [
@@ -31,7 +32,31 @@ export const suibutton: ComponentInfo = {
       {
         id: 'label-position',
         name: 'Label position',
-        type: 'options-property',
+        type: 'options',
+        defaultValue: null,
+        data: {
+          options: [
+            {
+              value: null,
+              text: 'None',
+            },
+            {
+              value: 'left',
+              text: 'Left',
+              icon: 'hand point left outline',
+            },
+            {
+              value: 'right',
+              text: 'Right',
+              icon: 'hand point right outline',
+            },
+          ],
+        },
+      },
+      {
+        id: 'floated',
+        name: 'Floated',
+        type: 'options',
         defaultValue: null,
         data: {
           options: [
@@ -55,14 +80,40 @@ export const suibutton: ComponentInfo = {
       {
         id: 'content',
         name: 'Content',
-        type: 'text-property',
-        defaultValue: 'Content',
+        type: 'text',
+        defaultValue: '',
       },
       {
         id: 'fluid',
         name: 'Fluid',
-        type: 'boolean-property',
-        defaultValue: 'true',
+        type: 'boolean',
+        defaultValue: 'false',
+      },
+      {
+        id: 'negative',
+        name: 'Negative',
+        type: 'boolean',
+        defaultValue: 'false',
+      },
+      {
+        id: 'positive',
+        name: 'Positive',
+        type: 'boolean',
+        defaultValue: 'false',
+      },
+      {
+        id: 'basic',
+        name: 'Basic',
+        type: 'boolean',
+        defaultValue: 'false',
+      },
+    ],
+    events: [
+      {
+        id: 'click',
+        name: 'Click',
+        type: 'boolean',
+        defaultValue: null,
       },
     ],
   },

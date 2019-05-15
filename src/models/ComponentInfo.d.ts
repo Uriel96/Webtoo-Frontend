@@ -21,6 +21,7 @@ export interface Dependency {
 export interface ComponentInfo {
   id: string;
   libraryId: string;
+  tagName: string;
   name: string;
   isHTMLTag?: boolean;
   entryId?: string;
@@ -35,6 +36,16 @@ export interface DynamicDefinitions {
   properties: PropertyDefinition[];
   data: DataDefinition[];
   functions: FunctionDefinition[];
+  events: EventDefinition[];
+}
+
+export interface EventDefinition {
+  id: string;
+  name: string;
+  type: string;
+  defaultValue: any;
+  dummy?: any;
+  data?: any;
 }
 
 export interface Definition {

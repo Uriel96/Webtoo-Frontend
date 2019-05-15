@@ -21,7 +21,7 @@ import { KeyBindings, Structure } from '@/models';
 })
 export default class ComponentEditor extends ExtendedVue {
   public mounted() {
-    this.editor.initializeProperties();
+    // this.editor.initializeProperties();
   }
 
   get keymap() {

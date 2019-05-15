@@ -18,6 +18,7 @@ import { PropertyDefinition } from '@/models';
 @Component({})
 export default class DynamicField extends ExtendedVue {
   @Prop() public propertyDef!: PropertyDefinition;
+  @Prop() public elementId!: string;
   @Prop() public value!: string;
 
   public selectedDynamicData = this.value;
@@ -28,7 +29,10 @@ export default class DynamicField extends ExtendedVue {
       return [];
     }
     const { properties, data } = currentComponent.dynamicDefinitions;
-    return [...properties, ...data];
+    const definitions = this.editor.getExternalDefinitions(this.editor.currentComponent!.id, this.elementId)
+      .flatMap((x) => [x.item, x.index]);
+    console.log(definitions);
+    return [...properties, ...data, ...definitions];
   }
   get validDynamicData() {
     return this.componentDynamicData

@@ -4,6 +4,7 @@ export const example2: ComponentInfo = {
   id: 'user2/pack1/Example2',
   libraryId: 'user2/pack1',
   name: 'Example2',
+  tagName: 'example-2',
   entryId: 'div-1',
   elements: [
     {
@@ -29,6 +30,7 @@ export const example2: ComponentInfo = {
           value: ['button-1'],
         },
       ],
+      events: [],
     },
     {
       id: 'button-1',
@@ -55,6 +57,7 @@ export const example2: ComponentInfo = {
           value: 'Click Me!',
         },
       ],
+      events: [],
     },
   ],
   style: [],
@@ -63,5 +66,6 @@ export const example2: ComponentInfo = {
     data: [],
     functions: [],
     properties: [],
+    events: [],
   },
 };

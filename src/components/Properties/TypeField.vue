@@ -1,14 +1,15 @@
 <template>
-  <sui-dropdown
-    :icon="null"
-    class="type-field"
-    selection
-    fluid
-    floating
-    v-model="selectedType"
-    @input="updateType"
-    :options="propertyTypes"
-  ></sui-dropdown>
+  <sui-dropdown :icon="icon" floating button v-model="selectedType">
+    <sui-dropdown-menu>
+      <sui-dropdown-item
+        v-for="propType in propertyTypes"
+        :key="propType.value"
+        @click="updateType"
+        :icon="propType.icon"
+        :text="propType.text"
+      ></sui-dropdown-item>
+    </sui-dropdown-menu>
+  </sui-dropdown>
 </template>
 
 <script lang='ts'>
@@ -18,16 +19,20 @@ import { Prop, Component } from 'vue-property-decorator';
 export const propertyTypes = [
   {
     value: 'static',
-    image: {
+    icon: 'circle',
+    text: 'Static',
+    /*image: {
       size: 'mini',
       src: require('@/assets/static.png'),
-    },
+    },*/
   },
   {
     value: 'dynamic',
-    image: {
+    icon: 'dot circle',
+    text: 'Dynamic',
+    /*image: {
       src: require('@/assets/dynamic.gif'),
-    },
+    },*/
   },
 ];
 
@@ -38,20 +43,24 @@ export default class TypeFiled extends ExtendedVue {
   public propertyTypes = propertyTypes;
   public selectedType = this.value;
 
-  public updateType(value: string): void {
-    this.$emit('input', value);
+  get icon() {
+    const propType = this.propertyTypes.find((x) => x.value === this.value);
+    if (!propType) {
+      return null;
+    }
+    return propType.icon;
+  }
+
+  public updateType(value: any): void {
+    const propType = this.propertyTypes.find((x) => x.text === value.target.textContent);
+    if (!propType) {
+      return;
+    }
+    this.$emit('input', propType.value);
   }
 }
 </script>
 
 
 <style scoped>
-.type-field {
-  padding-left: 10px !important;
-  padding-right: 5px !important;
-  vertical-align: middle !important;
-  text-align: center !important;
-  border-color: transparent !important;
-  background-color: #d7d8d8 !important;
-}
 </style>

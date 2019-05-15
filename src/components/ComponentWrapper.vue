@@ -1,11 +1,14 @@
 <template>
-  <draggable
-    :class="{
-      'selected-element-container' : isSelectedElement,
-      'element-container': !isSelectedElement
-    }"
-  >
-    <div @click.stop="selectComponent">
+  <draggable>
+    <sui-segment
+      :color="elementInfo.repeated ? 'blue' : null"
+      @click.stop.prevent="selectComponent"
+      style="padding: 2px"
+      :class="{
+        'selected-element-container' : isSelectedElement,
+        'element-container': !isSelectedElement,
+      }"
+    >
       <component
         :is="componentData"
         v-bind="componentProperties"
@@ -21,7 +24,7 @@
           />
         </template>
       </component>
-    </div>
+    </sui-segment>
   </draggable>
 </template>
 
@@ -51,6 +54,10 @@ export default class ComponentWrapper extends ExtendedVue {
     const { getStaticSlots } = this.editor;
     return getStaticSlots(this.componentId, this.elementId);
   }
+  get elementInfo() {
+    const { getElement, getComponent } = this.editor;
+    return getElement(this.componentId, this.elementId);
+  }
   get componentData() {
     const { getElement, getComponent } = this.editor;
     const elementInfo = getElement(this.componentId, this.elementId);
@@ -62,7 +69,7 @@ export default class ComponentWrapper extends ExtendedVue {
       return;
     }
     if (elementComponent.isHTMLTag) {
-      return elementComponent.name;
+      return elementComponent.tagName;
     }
     return InternalVue().options.components[elementComponent.name];
   }
@@ -88,8 +95,6 @@ export default class ComponentWrapper extends ExtendedVue {
 
 <style scoped>
 .selected-element-container {
-  padding: 2px;
-  margin: 2px;
   border-color: orange !important;
   border-style: solid !important;
   border-radius: 5px !important;
@@ -98,8 +103,6 @@ export default class ComponentWrapper extends ExtendedVue {
   cursor: pointer !important;
 }
 .element-container {
-  padding: 2px;
-  margin: 2px;
   border-color: #8caec2 !important;
   border-style: solid !important;
   border-radius: 5px !important;
@@ -109,6 +112,8 @@ export default class ComponentWrapper extends ExtendedVue {
 }
 .real-element {
   pointer-events: none !important;
+  display: -webkit-box;
+  padding: 5px;
 }
 .slot-container {
   border-color: lightgrey !important;

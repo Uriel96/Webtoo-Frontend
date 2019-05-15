@@ -69,3 +69,10 @@ export const createUID = () => {
 export const get = <T extends { id: string }>(elements: T[], id: string | undefined): T | undefined => {
   return elements.find((x) => x.id === id);
 };
+
+export const toCamelCase = (name: string) => {
+  const newName = name.replace(/\W+(.)/g, (match, chr) => {
+    return chr.toUpperCase();
+  });
+  return newName.charAt(0).toLowerCase() + newName.substring(1);
+};

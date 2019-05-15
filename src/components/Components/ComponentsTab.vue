@@ -1,9 +1,9 @@
 <template>
-  <sui-card-group style="margin: 10px">
-    <sui-accordion inverted>
+  <div class="components-container full-size tab-container">
+    <sui-accordion inverted class="full-size">
       <div v-for="library in libraries" :key="library.id">
         <sui-accordion-title>
-          <sui-card class="library-card">
+          <sui-card class="library-card" style="width: 100%">
             <sui-card-content>
               <sui-card-header>
                 <sui-icon name="dropdown"/>
@@ -12,12 +12,12 @@
             </sui-card-content>
           </sui-card>
         </sui-accordion-title>
-        <sui-accordion-content style="padding-left: 6px;">
+        <sui-accordion-content style="padding-left: 6px">
           <library-components :libraryId="library.id"/>
         </sui-accordion-content>
       </div>
     </sui-accordion>
-  </sui-card-group>
+  </div>
 </template>
 
 <script lang='ts'>
@@ -55,6 +55,9 @@ export default class ComponentsTab extends ExtendedVue {
 </script>
 
 <style scoped>
+.components-container {
+  padding: 10px !important;
+}
 .library-card {
   border-radius: 2px !important;
   box-shadow: none !important;

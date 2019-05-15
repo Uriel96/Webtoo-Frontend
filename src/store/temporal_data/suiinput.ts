@@ -4,6 +4,7 @@ export const suiinput: ComponentInfo = {
   id: 'semantic-ui-vue/SuiInput',
   libraryId: 'semantic-ui-vue',
   name: 'SuiInput',
+  tagName: 'sui-input',
   slots: [],
   dynamicDefinitions: {
     data: [],
@@ -12,31 +13,31 @@ export const suiinput: ComponentInfo = {
       {
         id: 'placeholder',
         name: 'Placeholder',
-        type: 'text-property',
-        defaultValue: 'My Input',
+        type: 'text',
+        defaultValue: '',
       },
       {
         id: 'disabled',
         name: 'Disabled',
-        type: 'boolean-property',
+        type: 'boolean',
         defaultValue: 'false',
       },
       {
         id: 'error',
         name: 'Error',
-        type: 'boolean-property',
+        type: 'boolean',
         defaultValue: 'false',
       },
       {
         id: 'focus',
         name: 'Focus',
-        type: 'boolean-property',
+        type: 'boolean',
         defaultValue: 'false',
       },
       {
         id: 'icon',
         name: 'Icon',
-        type: 'options-property',
+        type: 'options',
         defaultValue: null,
         data: {
           options: [
@@ -49,8 +50,8 @@ export const suiinput: ComponentInfo = {
       {
         id: 'iconPosition',
         name: 'Icon Position',
-        type: 'options-property',
-        defaultValue: 'left',
+        type: 'options',
+        defaultValue: null,
         data: {
           options: [
             {
@@ -69,32 +70,40 @@ export const suiinput: ComponentInfo = {
       {
         id: 'inverted',
         name: 'Inverted',
-        type: 'boolean-property',
+        type: 'boolean',
         defaultValue: 'false',
       },
       {
         id: 'loading',
         name: 'Loading',
-        type: 'boolean-property',
+        type: 'boolean',
         defaultValue: 'false',
       },
       {
         id: 'transparent',
         name: 'Transparent',
-        type: 'boolean-property',
+        type: 'boolean',
         defaultValue: 'false',
       },
       {
         id: 'type',
         name: 'Type',
-        type: 'text-property',
+        type: 'text',
         defaultValue: 'text',
       },
       {
         id: 'value',
         name: 'Value',
-        type: 'text-property',
+        type: 'text',
         defaultValue: '',
+      },
+    ],
+    events: [
+      {
+        id: 'input',
+        name: 'Input',
+        type: 'text',
+        defaultValue: null,
       },
     ],
   },

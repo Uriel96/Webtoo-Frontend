@@ -3,7 +3,10 @@
     v-if="isSlotList"
     class="slot-container"
     :get-child-payload="getChildPayload"
+    @drag-start="onDragStart"
+    @drag-end="onDragEnd"
     @drop="onDrop"
+    :should-accept-drop="shouldAcceptDrop"
     group-name="design"
   >
     <component-wrapper
@@ -41,7 +44,7 @@ export default class SlotWrapper extends ExtendedVue {
     if (!this.slotInfo) {
       return false;
     }
-    return this.slotInfo.type === 'list-property';
+    return this.slotInfo.type === 'list';
   }
   get slotInfo() {
     if (!this.element) {
@@ -82,11 +85,23 @@ export default class SlotWrapper extends ExtendedVue {
       this.editor.switchComponent(newPayload);
     }
   }
+  public onDragStart() {
+    this.editor.setDraggingElement(true);
+  }
+  public onDragEnd() {
+    this.editor.setDraggingElement(false);
+  }
+  public shouldAcceptDrop(sourceContainerOptions, payload) {
+    return true;
+  }
 }
 </script>
 
 <style scoped>
 .slot-container {
   padding: 5px;
+  width: fit-content;
+  float: left;
+  display: block;
 }
 </style>
