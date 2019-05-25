@@ -27,3 +27,6 @@ $ yarn serve
 
 ## :busts_in_silhouette: Contributors
 - [Uriel Salazar](https://github.com/Uriel96)
+
+## License
+MIT
