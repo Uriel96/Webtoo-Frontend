@@ -16,12 +16,12 @@ $ git clone https://github.com/Uriel96/webtoo-frontend.git webtoo-frontend
 
 # To install all dependencies (inside webtoo-frontend project)
 $ npm install
-OR
+# or
 $ yarn install
 
 # To run the app
 $ npm run serve
-OR
+# or
 $ yarn serve
 ```
 
