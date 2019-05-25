@@ -1,11 +1,9 @@
 # Webtoo
 Webtoo is a platform that lets you intuitively build complex applications.
 
-To see the current state of the platform:
-:computer: Website: https://webtoo-5163b.firebaseapp.com/
+To see the current state of the platform: :computer: **[Website]**(https://webtoo-5163b.firebaseapp.com/)
 
-To track the progress of this project visit:
-:pencil: Trello: https://trello.com/b/qmRmp4yS/webtoo
+To track the progress of this project visit: :pencil: **[Trello]**(https://trello.com/b/qmRmp4yS/webtoo/)
 
 ## :rocket: Installation
 To clone the project execute the following command:
