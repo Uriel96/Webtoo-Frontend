@@ -10,7 +10,7 @@ To see the current state of the platform: :computer: [Website](https://webtoo-51
 To track the progress of this project visit: :pencil: [Trello](https://trello.com/b/qmRmp4yS/webtoo/)
 
 ## :rocket: Installation
-```
+```bash
 # To clone the repository
 $ git clone https://github.com/Uriel96/webtoo-frontend.git webtoo-frontend
 
