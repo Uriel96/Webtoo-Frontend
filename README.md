@@ -7,12 +7,11 @@
 
 <div align="center">
 
-[Website][website]
+:computer:[Website][website]
 &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-[Trello][trello]
+:pencil:[Trello][trello]
 
 </div>
-:computer: :pencil: 
 
 ## :rocket: Installation
 ```bash
