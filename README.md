@@ -5,7 +5,7 @@
 </h1>
 <h4 align="center">A platform that lets you intuitively build complex applications</h4>
 <div align="center">
-  :computer: [Website](https://webtoo-5163b.firebaseapp.com/)&nbsp;&nbsp;&nbsp;|
+  :computer: [Website](https://webtoo-5163b.firebaseapp.com/)|
   :pencil: [Trello](https://trello.com/b/qmRmp4yS/webtoo/)
 </div>
 
