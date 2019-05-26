@@ -6,10 +6,12 @@
 <h4 align="center">A platform that lets you intuitively build complex applications</h4>
 
 <div align="center">
-  [Website](https://webtoo-5163b.firebaseapp.com/)
-  &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-  [Trello](https://trello.com/b/qmRmp4yS/webtoo/)
+  
+[Website][website]&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;[Trello](#trello)
+
 </div>
+(https://webtoo-5163b.firebaseapp.com/)
+(https://trello.com/b/qmRmp4yS/webtoo/)
 :computer: :pencil: 
 
 ## :rocket: Installation
