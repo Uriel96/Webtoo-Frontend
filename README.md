@@ -4,10 +4,10 @@
   <br>
 </h1>
 <h4 align="center">A platform that lets you intuitively build complex applications</h4>
-
-To see the current state of the platform: :computer: [Website](https://webtoo-5163b.firebaseapp.com/)
-
-To track the progress of this project visit: :pencil: [Trello](https://trello.com/b/qmRmp4yS/webtoo/)
+<div align="center">
+  :computer: [Website](https://webtoo-5163b.firebaseapp.com/)&nbsp;&nbsp;&nbsp;|
+  :pencil: [Trello](https://trello.com/b/qmRmp4yS/webtoo/)
+</div>
 
 ## :rocket: Installation
 ```bash
