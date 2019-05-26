@@ -39,5 +39,5 @@ MIT
 <!--
 External Links
 -->
-[wiki]:https://webtoo-5163b.firebaseapp.com/
+[website]:https://webtoo-5163b.firebaseapp.com/
 [trello]:https://trello.com/b/qmRmp4yS/webtoo/
