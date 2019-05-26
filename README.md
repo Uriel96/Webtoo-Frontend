@@ -6,12 +6,12 @@
 <h4 align="center">A platform that lets you intuitively build complex applications</h4>
 
 <div align="center">
-  
-[Website][website]&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;[Trello](#trello)
+
+[Website][website]
+&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+[Trello][trello]
 
 </div>
-(https://webtoo-5163b.firebaseapp.com/)
-(https://trello.com/b/qmRmp4yS/webtoo/)
 :computer: :pencil: 
 
 ## :rocket: Installation
@@ -35,3 +35,9 @@ $ yarn serve
 
 ## License
 MIT
+
+<!--
+External Links
+-->
+[wiki]:https://webtoo-5163b.firebaseapp.com/
+[trello]:https://trello.com/b/qmRmp4yS/webtoo/
