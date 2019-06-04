@@ -91,7 +91,7 @@ export default class SlotWrapper extends ExtendedVue {
   public onDragEnd() {
     this.editor.setDraggingElement(false);
   }
-  public shouldAcceptDrop(sourceContainerOptions, payload) {
+  public shouldAcceptDrop(sourceContainerOptions: any, payload: any) {
     return true;
   }
 }

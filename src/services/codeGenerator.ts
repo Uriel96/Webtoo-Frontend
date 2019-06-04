@@ -1,5 +1,6 @@
 import {
-  ComponentInfo, PropertyDefinition, DataDefinition, FunctionDefinition, PropertyData, SlotData, EventData, StyleInfo, ElementInfo,
+  ComponentInfo, PropertyDefinition, DataDefinition, FunctionDefinition,
+  PropertyData, SlotData, EventData, StyleInfo, ElementInfo,
 } from '@/models';
 import { toCamelCase, get } from '@/utilities';
 import { DesignEditorModule } from '@/store/modules/editor';
@@ -142,8 +143,8 @@ export const generateEvent = (
     }).find((y) => y && y.id === x.dynamicId);
     if (x.type === 'event') {
       return '$event';
-    } else if (editor.definition(component.id, x.dynamicId)) {
-      return toCamelCase(editor.definition(component.id, x.dynamicId)!.name);
+    } else if (editor.definition(component.id, x.dynamicId!)) {
+      return toCamelCase(editor.definition(component.id, x.dynamicId!)!.name);
     } else if (externalDef) {
       return toCamelCase(externalDef.name);
     } else {

@@ -89,7 +89,7 @@ export default class EventsData extends ExtendedVue {
   public getFunction(id: string) {
     return this.componentInfo ? get(this.componentInfo.dynamicDefinitions.functions, id) : undefined;
   }
-  public updateEvent(e, event: EventDefinition) {
+  public updateEvent(e: any, event: EventDefinition) {
     const { parameters } = this.getFunction(e)!;
     const newArguments = parameters
       .map((paramDef) => ({ id: paramDef.id, type: 'static', dynamicId: null, value: null } as ArgumentData));

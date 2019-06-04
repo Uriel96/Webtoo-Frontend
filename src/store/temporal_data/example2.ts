@@ -10,6 +10,7 @@ export const example2: ComponentInfo = {
     {
       id: 'div-1',
       name: 'Div 1',
+      parentId: null,
       componentId: 'main/div',
       properties: [
         {
@@ -35,6 +36,7 @@ export const example2: ComponentInfo = {
     {
       id: 'button-1',
       name: 'Button 1',
+      parentId: 'div-1',
       componentId: 'vuetify/VBtn',
       properties: [
         {

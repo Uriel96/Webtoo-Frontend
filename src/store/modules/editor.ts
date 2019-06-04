@@ -99,6 +99,7 @@ export class DesignEditorModule extends VuexModule {
     const newId = `${draggedId}-${createUID()}`;
     const temp: ElementInfo = {
       id: newId,
+      parentId: null,
       name: draggedComponentInfo.name + '-1',
       componentId: draggedId,
       properties,
@@ -245,17 +246,14 @@ export class DesignEditorModule extends VuexModule {
   get getExternalDefinitions() {
     return (componentId?: string | undefined, elementId?: string | undefined) => {
       let currentElement = getElement(this, componentId, elementId);
-      const a = [];
-      if (!currentElement) {
-        return [];
-      }
-      while (currentElement.parentId != null) {
+      const externalDefinitions = [];
+      while (currentElement && currentElement.parentId != null) {
         if (currentElement.repeated) {
-          a.push(currentElement.repeat);
+          externalDefinitions.push(currentElement.repeat);
         }
         currentElement = getElement(this, componentId, currentElement.parentId);
       }
-      return a;
+      return externalDefinitions;
     };
   }
 

@@ -233,12 +233,16 @@ export default class PropertiesTab extends ExtendedVue {
     return type.field;
   }
   public addProperty() {
-    this.elementInfo.properties.push({ id: this.newPropertyId, type: 'static' });
-    this.newPropertyId = null;
-    this.showAddProperty = false;
+    if (this.elementInfo && this.newPropertyId) {
+      this.elementInfo.properties.push({ id: this.newPropertyId, type: 'static', value: undefined });
+      this.newPropertyId = null;
+      this.showAddProperty = false;
+    }
   }
   public removeProperty(id: string) {
-    this.elementInfo.properties = this.elementInfo.properties.filter((x) => x.id !== id);
+    if (this.elementInfo) {
+      this.elementInfo.properties = this.elementInfo.properties.filter((x) => x.id !== id);
+    }
   }
 }
 </script>

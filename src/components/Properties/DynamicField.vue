@@ -31,7 +31,6 @@ export default class DynamicField extends ExtendedVue {
     const { properties, data } = currentComponent.dynamicDefinitions;
     const definitions = this.editor.getExternalDefinitions(this.editor.currentComponent!.id, this.elementId)
       .flatMap((x) => [x.item, x.index]);
-    console.log(definitions);
     return [...properties, ...data, ...definitions];
   }
   get validDynamicData() {

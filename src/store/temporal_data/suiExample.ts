@@ -189,7 +189,7 @@ export const semanticExample: ComponentInfo = {
           id: 'click',
           type: 'static',
           dynamicId: '$removeTodo',
-          arguments: [{ dynamicId: '$index', type: 'dynamic' }],
+          arguments: [{ id: '$index', type: 'dynamic' }],
         },
       ],
     },
