@@ -1,21 +1,42 @@
-# webtoo-frontend
+<h1 align="center">
+  <br>
+    Webtoo
+  <br>
+</h1>
+<h4 align="center">A platform that lets you intuitively build complex applications</h4>
 
-## Project setup
-```
-yarn install
+<div align="center">
+
+:computer:[Website][website]
+&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+:pencil:[Trello][trello]
+
+</div>
+
+## :rocket: Installation
+```bash
+# To clone the repository
+$ git clone https://github.com/Uriel96/webtoo-frontend.git webtoo-frontend
+
+# To install all dependencies (inside webtoo-frontend project)
+$ npm install
+# or
+$ yarn install
+
+# To run the app
+$ npm run serve
+# or
+$ yarn serve
 ```
 
-### Compiles and hot-reloads for development
-```
-yarn run serve
-```
+## :busts_in_silhouette: Contributors
+- [Uriel Salazar](https://github.com/Uriel96)
 
-### Compiles and minifies for production
-```
-yarn run build
-```
+## License
+MIT
 
-### Lints and fixes files
-```
-yarn run lint
-```
+<!--
+External Links
+-->
+[website]:https://webtoo-5163b.firebaseapp.com/
+[trello]:https://trello.com/b/qmRmp4yS/webtoo/
